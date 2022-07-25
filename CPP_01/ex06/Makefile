@@ -2,7 +2,7 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = Harl_says
+NAME = harlFilter
 INCL_DIR = Harl.hpp
 SRC_DIR = 
 UTILS_DIR = 
