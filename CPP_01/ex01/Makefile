@@ -20,8 +20,7 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = main.cpp \
-	newZombie.cpp \
-	randomChump.cpp \
+	zombieHorde.cpp \
 	Zombie.cpp
 
 OBJS = $(SRC:.cpp=.o)

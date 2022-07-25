@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Zombie.cpp                                         :+:      :+:    :+:   */
+/*   HumanA.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/19 08:18:12 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 08:41:12 by vheran           ###   ########.fr       */
+/*   Created: 2022/07/20 08:12:13 by vheran            #+#    #+#             */
+/*   Updated: 2022/07/21 12:11:35 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Zombie.hpp"
+#include "HumanA.hpp"
 
-Zombie::Zombie(std::string name) : _name(name)
+HumanA::HumanA(std::string const & name, Weapon &weapon) : _name(name), _weapon(weapon)
 {
 }
 
-Zombie::~Zombie()
+HumanA::~HumanA()
 {
-	std::cout << this->_name << " died (again)..." << std::endl;
 }
 
-void Zombie::announce(void)
+void	HumanA::attack()
 {
-	std::cout << this->_name << ": BraiiiiiiinnnzzzZ..." << std::endl;
+	std::cout << this->_name << " attacks with their " << this->_weapon.getType() << std::endl;
 }

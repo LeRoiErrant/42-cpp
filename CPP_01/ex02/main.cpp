@@ -5,19 +5,26 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/19 08:31:33 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 13:59:31 by vheran           ###   ########.fr       */
+/*   Created: 2022/07/20 07:58:47 by vheran            #+#    #+#             */
+/*   Updated: 2022/07/20 08:04:16 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Zombie.hpp"
+#include <iostream>
+#include <string>
 
 int	main(void)
 {
-	Zombie	*Z = newZombie("Nils");
-
-	randomChump("Regis");
-	Z->announce();
-	delete Z;
+	std::string 	str("HI THIS IS BRAIN");
+	std::string*	ptr = &str;
+	std::string&	ref = str;
+	std::cout << "Memory address:" << std::endl;
+	std::cout << "STR: " << &str << std::endl;
+	std::cout << "PTR: " << ptr << std::endl;
+	std::cout << "REF: " << &ref << std::endl;
+	std::cout << "Value:" << std::endl;
+	std::cout << "STR: " << str << std::endl;
+	std::cout << "PTR: " << *ptr << std::endl;
+	std::cout << "REF: " << str << std::endl;
 	return (0);
 }

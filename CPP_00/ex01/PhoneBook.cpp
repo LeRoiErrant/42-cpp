@@ -38,7 +38,7 @@ void	PhoneBook::to_know_more()
 	std::getline(std::cin, cmd);
 	ss << cmd;
 	ss >> idx;
-	if (idx < 1 or 9 < idx or (idx != 9 and this->_contacts[idx - 1].getInformations() == false))
+	if (idx < 1 or 9 < idx or cmd.length()!= 1 or (idx != 9 and this->_contacts[idx - 1].getInformations() == false))
 	{
 		std::cout << RE << "Invalid index" << RC << std::endl;
 		this->to_know_more();

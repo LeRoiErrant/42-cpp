@@ -2,8 +2,8 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = zombies
-INCL_DIR = Zombie.hpp
+NAME = BattleRoyale
+INCL_DIR = Weapon.hpp HumanA.hpp HumanB.hpp
 SRC_DIR = ./src
 UTILS_DIR = utils
 
@@ -20,9 +20,9 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = main.cpp \
-	newZombie.cpp \
-	randomChump.cpp \
-	Zombie.cpp
+	Weapon.cpp \
+	HumanA.cpp \
+	HumanB.cpp
 
 OBJS = $(SRC:.cpp=.o)
 

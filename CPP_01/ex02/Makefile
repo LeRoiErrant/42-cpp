@@ -2,8 +2,8 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = zombies
-INCL_DIR = Zombie.hpp
+NAME = brain
+INCL_DIR = 
 SRC_DIR = ./src
 UTILS_DIR = utils
 
@@ -19,10 +19,7 @@ LIB_FLAGS =
 #								SOURCE FILES								   #
 # **************************************************************************** #
 
-SRC = main.cpp \
-	newZombie.cpp \
-	randomChump.cpp \
-	Zombie.cpp
+SRC = main.cpp 
 
 OBJS = $(SRC:.cpp=.o)
 

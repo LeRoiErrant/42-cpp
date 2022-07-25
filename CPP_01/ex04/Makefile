@@ -2,10 +2,10 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = zombies
-INCL_DIR = Zombie.hpp
-SRC_DIR = ./src
-UTILS_DIR = utils
+NAME = mySed
+INCL_DIR = Sed.hpp
+SRC_DIR = 
+UTILS_DIR = 
 
 # **************************************************************************** #
 #						COMPILATION AND LINK FLAGS							   #
@@ -20,9 +20,7 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = main.cpp \
-	newZombie.cpp \
-	randomChump.cpp \
-	Zombie.cpp
+	Sed.cpp
 
 OBJS = $(SRC:.cpp=.o)
 
@@ -67,6 +65,8 @@ c_done:
 clean:
 	@printf "\n$(YE)Cleaning...\n"
 	@rm -f ${OBJS}
+	@rm -f *.test
+	@rm -f *.replace
 	@printf "\n$(GR)=> Cleaning complete!$(RC)\n\n"
 
 fclean: clean
@@ -86,5 +86,19 @@ re: fclean all
 
 vg: all
 	@valgrind --leak-check=full --track-origins=yes ./${NAME}
+
+test_files:
+	touch test.test
+	echo Ceci est un test >> test.test
+	echo Ceci est un second test >> test.test
+	echo Ceci est un test différent >> test.test
+	echo Ici testons lorsque le search est contenue dans un mot plus long >> test.test
+	echo Test des majuscules >> test.test
+
+test: all test_files
+	./mySed test.txt test essai
+	./mySed test.test test essai
+	cat test.test.replace
+
 
 .PHONY: all bonus clean fclean launch re

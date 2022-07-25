@@ -5,19 +5,41 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/19 08:31:33 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 13:59:31 by vheran           ###   ########.fr       */
+/*   Created: 2022/07/25 08:11:25 by vheran            #+#    #+#             */
+/*   Updated: 2022/07/25 09:45:41 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Zombie.hpp"
+#include "Sed.hpp"
 
-int	main(void)
+int	cerberror(std::string msg, char *arg, int errnum)
 {
-	Zombie	*Z = newZombie("Nils");
+	if (!msg.empty())
+		std::cerr << msg;
+	if (arg)
+		std::cerr << arg;
+	std::cerr << std::endl;
+	return (errnum);
+}
 
-	randomChump("Regis");
-	Z->announce();
-	delete Z;
-	return (0);
+int	main(int argc, char **argv)
+{
+	std::ifstream	ifs;
+	std::ofstream	ofs;
+
+	if (argc != 4)
+		return (cerberror("Bad arguments: filestream str1 str2", 0, FAILURE));
+	else
+	{
+		try
+		{
+			Sed::replace(argv[1], argv[2], argv[3]);	
+		}
+		catch(const std::string &e)
+		{
+			std::cerr << e << std::endl;
+		}
+		
+	}
+	return (SUCCESS);
 }

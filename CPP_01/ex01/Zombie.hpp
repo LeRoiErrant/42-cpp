@@ -1,27 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Zombie.cpp                                         :+:      :+:    :+:   */
+/*   Zombie.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/19 08:18:12 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 08:41:12 by vheran           ###   ########.fr       */
+/*   Created: 2022/07/11 17:47:31 by vheran            #+#    #+#             */
+/*   Updated: 2022/07/19 13:57:20 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Zombie.hpp"
+#ifndef ZOMBIE_HPP
+# define ZOMBIE_HPP
 
-Zombie::Zombie(std::string name) : _name(name)
-{
-}
+#include <iostream>
+class Zombie {
+	
+	private:
+		std::string	_name;
+		static int	_total;
 
-Zombie::~Zombie()
-{
-	std::cout << this->_name << " died (again)..." << std::endl;
-}
+	public:
+		Zombie( void );
+		~Zombie( void );
+		void	announce(void);
+		void	setName(std::string name);
+		static void	checkHorde(Zombie *Horde);
 
-void Zombie::announce(void)
-{
-	std::cout << this->_name << ": BraiiiiiiinnnzzzZ..." << std::endl;
-}
+};
+
+Zombie* zombieHorde(int N, std::string name);
+
+#endif
