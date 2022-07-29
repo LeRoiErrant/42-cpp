@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 08:54:46 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 13:59:59 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/29 14:22:34 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	main(int argc, char ** argv)
 	if (argc != 3)
 	{
 		std::cout << "error: please inform how many zombies then their name" << std::endl;
+		return (1);
 	}
 	Horde = zombieHorde(std::atoi(argv[1]), argv[2]);
 	Zombie::checkHorde(Horde);

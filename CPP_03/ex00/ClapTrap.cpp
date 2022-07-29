@@ -1,22 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   zombieHorde.cpp                                    :+:      :+:    :+:   */
+/*   ClapTrap.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/19 08:51:05 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/29 13:24:59 by vheran           ###   ########.fr       */
+/*   Created: 2022/07/29 13:15:32 by vheran            #+#    #+#             */
+/*   Updated: 2022/07/29 14:09:17 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Zombie.hpp"
+#include "ClapTrap.hpp"
 
-Zombie* zombieHorde(int N, std::string name)
-{
-	Zombie*	Horde = new Zombie[N];
+ClapTrap::ClapTrap( void ) {
 
-	for (int i = 0; i < N; i++)
-		Horde[i].setName(name);
-	return (Horde);
 }

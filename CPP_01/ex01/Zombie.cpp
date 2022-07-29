@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 08:18:12 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 14:00:56 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/29 13:24:27 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	Zombie::_total = 0;
 
-Zombie::Zombie()
+Zombie::Zombie() : _name("")
 {
 	Zombie::_total += 1;
 }
@@ -27,7 +27,8 @@ Zombie::~Zombie()
 
 void	Zombie::announce(void)
 {
-	std::cout << this->_name << ": BraiiiiiiinnnzzzZ..." << std::endl;
+	if (!this->_name.empty())
+		std::cout << this->_name << ": BraiiiiiiinnnzzzZ..." << std::endl;
 }
 
 void	Zombie::setName(std::string name)

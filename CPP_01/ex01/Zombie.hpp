@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 17:47:31 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/19 13:57:20 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/29 13:24:11 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define ZOMBIE_HPP
 
 #include <iostream>
+#include <string>
 class Zombie {
 	
 	private:
