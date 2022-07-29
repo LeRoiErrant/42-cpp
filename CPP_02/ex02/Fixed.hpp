@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 11:30:53 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/27 15:21:07 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/29 10:59:58 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class Fixed {
 		int					_FixedPointNumber;
 
 		static bool			_Verbose;
+		static bool			_incrementBit;
 		static void			_myVerbose(std::string msg);
 
 	public:
@@ -33,12 +34,31 @@ class Fixed {
 		~Fixed( void );
 
 		Fixed	&operator=( Fixed const & src );
+		bool	operator>( Fixed const & right ) const;
+		bool	operator<( Fixed const & right ) const;
+		bool	operator>=( Fixed const & right ) const;
+		bool	operator<=( Fixed const & right ) const;
+		bool	operator==( Fixed const & right ) const;
+		bool	operator!=( Fixed const & right ) const;
+		Fixed	operator+( Fixed const & right ) const;
+		Fixed	operator-( Fixed const & right ) const;
+		Fixed	operator*( Fixed const & right ) const;
+		Fixed	operator/( Fixed const & right ) const;
+		Fixed	&operator++( void );
+		Fixed	operator++( int );
+		Fixed	&operator--( void );
+		Fixed	operator--( int );
 
 		int		getRawBits( void ) const;
 		void	setRawBits( int const raw );
 
 		float	toFloat( void ) const;
 		int		toInt( void ) const;
+
+		static const Fixed	&min(const Fixed &a, const Fixed &b);
+		static Fixed	&min(Fixed &a, Fixed &b);
+		static const Fixed	&max(const Fixed &a, const Fixed &b);
+		static Fixed	&max(Fixed &a, Fixed &b);
 
 		static bool	getVerbose( void );
 		static void	setVerbose( bool value);

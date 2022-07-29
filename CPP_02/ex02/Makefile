@@ -88,4 +88,7 @@ vg: all
 test: all
 	./${NAME}
 
+leaks: all
+	leaks -atExit -- ./${NAME}
+
 .PHONY: all bonus clean fclean launch re

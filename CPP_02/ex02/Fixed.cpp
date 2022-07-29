@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 11:45:05 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/27 15:32:50 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/29 11:40:09 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 const int	Fixed::_N_FBits = 8;
 
-bool		Fixed::_Verbose = true;
+bool		Fixed::_Verbose = false;
+
+bool		Fixed::_incrementBit = true;
 
 Fixed::Fixed( void ) : _FixedPointNumber(0) {
 	Fixed::_myVerbose("Default constructor called");
@@ -85,4 +87,116 @@ void	Fixed::_myVerbose(std::string msg) {
 std::ostream	&operator<<( std::ostream & ostream, Fixed const & src ) {
 	ostream << src.toFloat();
 	return (ostream);
+}
+
+bool	Fixed::operator>( Fixed const & right ) const {
+	return (this->_FixedPointNumber > right.getRawBits());
+}
+
+bool	Fixed::operator<( Fixed const & right ) const {
+	return (right > *this);
+}
+
+bool	Fixed::operator>=( Fixed const & right ) const {
+	return (!(*this < right));
+}
+
+bool	Fixed::operator<=( Fixed const & right ) const {
+	return (!(*this > right));
+}
+
+bool	Fixed::operator==( Fixed const & right ) const {
+	return (this->_FixedPointNumber == right.getRawBits());
+}
+
+bool	Fixed::operator!=( Fixed const & right ) const {
+	return (!(*this == right));
+}
+
+Fixed	Fixed::operator+( Fixed const & right ) const {
+	Fixed	result;
+
+	result.setRawBits(this->getRawBits() + right.getRawBits());
+	return (result);
+}
+
+Fixed	Fixed::operator-( Fixed const & right ) const {
+	Fixed	result;
+
+	result.setRawBits(this->getRawBits() - right.getRawBits());
+	return (result);
+}
+
+Fixed	Fixed::operator/( Fixed const & right )	const {
+	Fixed	result (this->toFloat() / right.toFloat());
+	return (result);
+}
+
+Fixed	Fixed::operator*( Fixed const & right ) const {
+	Fixed result (this->toFloat() * right.toFloat());
+	return (result);
+}
+
+Fixed	&Fixed::operator++( void ) {
+	if (Fixed::_incrementBit)
+		this->_FixedPointNumber++;
+	else
+		this->_FixedPointNumber = (this->_FixedPointNumber) + (1 << Fixed::_N_FBits);
+	return (*this);
+}
+
+Fixed	Fixed::operator++( int ) {
+	Fixed	old(*this);
+
+	if (Fixed::_incrementBit)
+		this->_FixedPointNumber++;
+	else
+		this->_FixedPointNumber = (this->_FixedPointNumber) + (1 << Fixed::_N_FBits);
+	return (old);
+}
+
+Fixed	&Fixed::operator--( void ) {
+	if (Fixed::_incrementBit)
+		this->_FixedPointNumber--;
+	else
+		this->_FixedPointNumber = (this->_FixedPointNumber) - (1 << Fixed::_N_FBits);
+	return (*this);
+}
+
+Fixed	Fixed::operator--( int ) {
+	Fixed	old(*this);
+
+	if (Fixed::_incrementBit)
+		this->_FixedPointNumber--;
+	else
+		this->_FixedPointNumber = (this->_FixedPointNumber) - (1 << Fixed::_N_FBits);
+	return (old);
+}
+
+const Fixed	&Fixed::min(const Fixed &a, const Fixed &b) {
+	if (a < b)
+		return (a);
+	else
+		return (b);
+}
+
+Fixed	&Fixed::min(Fixed &a, Fixed &b) {
+	if (a < b)
+		return (a);
+	else
+		return (b);
+}
+
+const Fixed	&Fixed::max(const Fixed &a, const Fixed &b) {
+	if (a > b)
+		return (a);
+	else
+		return (b);
+}
+
+Fixed	&Fixed::max(Fixed &a, Fixed &b) {
+	if (a > b)
+		return (a);
+	else
+		return (b);
 }
