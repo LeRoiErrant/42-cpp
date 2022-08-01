@@ -2,8 +2,8 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = mySed
-INCL_DIR = Sed.hpp
+NAME = BattleBots
+INCL_DIR = ClapTrap.hpp
 SRC_DIR = 
 UTILS_DIR = 
 
@@ -20,7 +20,8 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = main.cpp \
-	Sed.cpp
+	ClapTrap.cpp \
+	ScavTrap.cpp
 
 OBJS = $(SRC:.cpp=.o)
 
@@ -65,8 +66,6 @@ c_done:
 clean:
 	@printf "\n$(YE)Cleaning...\n"
 	@rm -f ${OBJS}
-	@rm -f *.test
-	@rm -f *.replace
 	@printf "\n$(GR)=> Cleaning complete!$(RC)\n\n"
 
 fclean: clean
@@ -87,19 +86,10 @@ re: fclean all
 vg: all
 	@valgrind --leak-check=full --track-origins=yes ./${NAME}
 
-test_files:
-	touch test.test
-	echo "Ceci est un test" >> test.test
-	echo "Ceci est un second                 test" >> test.test
-	echo "Je n'ai pas fait de test avec plusieurs mots test dans la string" >> test.test
-	echo "Ceci est un test différent" >> test.test
-	echo "Ici testons lorsque le search est contenu dans un mot plus long" >> test.test
-	echo "Test des majuscules" >> test.test
+test: all
+	./${NAME}
 
-test: all test_files
-	./mySed test.txt test essai
-	./mySed test.test test essai
-	cat test.test.replace
-
+leaks: all
+	leaks -atExit -- ./${NAME}
 
 .PHONY: all bonus clean fclean launch re

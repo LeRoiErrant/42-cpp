@@ -6,45 +6,25 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:02:06 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/29 14:25:05 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/30 15:56:18 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClassGen.hpp"
 
-#define FAILURE 1
-
-int	cerberror(std::string msg, std::string arg, int errnum) {
-	if (!msg.empty())
-		std::cerr << msg;
-	if (!arg.empty())
-		std::cerr << arg;
-	std::cerr << std::endl;
-	return (errnum);
-}
-
-bool	open_files(std::string const & filename) {
-	std::ofstream	cpp;
-	std::ofstream	hpp;
-	std::string		c_outfile(filename);
-	std::string		h_outfile(filename);
-	
-	c_outfile.append(".cpp");
-	cpp.open(c_outfile.data(), std::ios::trunc);
-	if (!cpp.is_open())
-		return (cerberror("can't open: ", c_outfile, false));
-	h_outfile.append(".hpp");
-	hpp.open(h_outfile.data(), std::ios::trunc);
-	if (!hpp.is_open())
-		return (cerberror("can't open: ", h_outfile, false));
-	return (true);
-}
 
 int	main(int argc, char **argv) {
-	//int				i = 1;
-	
-	(void) argc;
-	if (!open_files(argv[1]))
+	ClassGen	newClass;
+
+	if (argc < 2)
+		return(cerberror("ClassGen: error: ClassName needed", "", FAILURE));
+	newClass.setFilename(argv[1]);
+	if (argc > 2)
+		newClass.setVariables(argc, argv);
+	if (!newClass.open_files())
 		return (FAILURE);
+	newClass.write_cpp();
+	newClass.write_hpp();
+	newClass.close_files();
 	return (0);
 }

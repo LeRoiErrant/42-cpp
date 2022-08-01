@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:22:26 by vheran            #+#    #+#             */
-/*   Updated: 2022/08/01 09:49:29 by vheran           ###   ########.fr       */
+/*   Updated: 2022/08/01 14:48:56 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,16 @@
 # define MA "\001\033[1;95m\002"
 # define BL "\001\033[1;94m\002"
 # define RC "\033[0m"
+
+# define HP 10
+# define EP 10
+# define DPA 0
+
 class ClapTrap {
 
 	private:
-		std::string			_Name;
+		std::string			_Name;		
+	protected:
 		unsigned int		_HitPoints;
 		unsigned int		_InitialHP;
 		unsigned int		_EnergyPoints;
@@ -55,8 +61,8 @@ class ClapTrap {
 		void			setEnergyPoints(unsigned int ep);
 		void			setAttackDamage(unsigned int dpa);
 
-		void			attack(const std::string& target);
-		void			takeDamage(unsigned int amount);
+		virtual void	attack(const std::string& target);
+		virtual void	takeDamage(unsigned int amount);
 		void			beRepaired(unsigned int amount);
 };
 

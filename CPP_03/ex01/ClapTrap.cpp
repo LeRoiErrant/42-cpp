@@ -1,9 +1,10 @@
 #include "ClapTrap.hpp"
+#include "ScavTrap.hpp"
 
 ClapTrap	*ClapTrap::FirstBot = NULL;
 ClapTrap	*ClapTrap::LastBot = NULL;
 
-ClapTrap::ClapTrap( void ) : _Name("Unamed Bot"), _HitPoints(10), _InitialHP(_HitPoints), _EnergyPoints(10), _AttackDamage(0) {
+ClapTrap::ClapTrap( void ) : _Name("Unamed Bot"), _HitPoints(HP), _InitialHP(_HitPoints), _EnergyPoints(EP), _AttackDamage(DPA) {
 	if (!ClapTrap::FirstBot) {
 		this->Previous = NULL;
 		ClapTrap::FirstBot = this;
@@ -15,10 +16,12 @@ ClapTrap::ClapTrap( void ) : _Name("Unamed Bot"), _HitPoints(10), _InitialHP(_Hi
 		this->Next = NULL;
 		ClapTrap::LastBot = this;
 	}
-	std::cout << this->_Name << " is ready to fight!" << std::endl;
+	std::cout << *this << " has been succesfully created as a ClapTrap!" << std::endl;
+	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	std::cout << *this << " is ready to fight!" << std::endl;
 }
 
-ClapTrap::ClapTrap( std::string name ) : _Name(name), _HitPoints(10), _InitialHP(_HitPoints), _EnergyPoints(10), _AttackDamage(0) {
+ClapTrap::ClapTrap( std::string name ) : _Name(name), _HitPoints(HP), _InitialHP(_HitPoints), _EnergyPoints(EP), _AttackDamage(DPA) {
 	if (!ClapTrap::FirstBot) {
 		this->Previous = NULL;
 		ClapTrap::FirstBot = this;
@@ -30,7 +33,9 @@ ClapTrap::ClapTrap( std::string name ) : _Name(name), _HitPoints(10), _InitialHP
 		this->Next = NULL;
 		ClapTrap::LastBot = this;
 	}
-	std::cout << this->_Name << " is ready to fight!" << std::endl;
+	std::cout << *this << " has been succesfully created as a ClapTrap!" << std::endl;
+	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	std::cout << *this << " is ready to fight!" << std::endl;
 }
 
 ClapTrap::ClapTrap( ClapTrap const & src ) {
@@ -50,7 +55,9 @@ ClapTrap::ClapTrap( ClapTrap const & src ) {
 		this->Next = NULL;
 		ClapTrap::LastBot = this;
 	}
-	std::cout << this->_Name << " is ready to fight!" << std::endl;
+	std::cout << *this << " has been succesfully cloned as a ClapTrap!" << std::endl;
+	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	std::cout << *this << " is ready to fight!" << std::endl;
 }
 
 ClapTrap::~ClapTrap( void ) {
@@ -70,7 +77,14 @@ ClapTrap::~ClapTrap( void ) {
 }
 
 ClapTrap	&ClapTrap::operator=( ClapTrap const & src ) {
-	(void) src;
+	std::cout << *this << " is being reassignated from:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	this->_Name = src.getName();
+	this->_HitPoints = src.getHitPoints();
+	this->_InitialHP = src.getInitialHP();
+	this->_EnergyPoints = src.getEnergyPoints();
+	this->_AttackDamage = src.getAttackDamage();
+	std::cout << "to:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	std::cout << "He is now " << *this << std::endl;
 	return (*this);
 }
 
@@ -120,11 +134,11 @@ void	ClapTrap::attack(const std::string& target) {
 	ClapTrap	*bot;
 
 	if (this->_HitPoints and this->_EnergyPoints) {
-		std::cout << "[ " << *this << " ] ";
+		std::cout << "[ " << *this << " ]\t";
 		bot = ClapTrap::FirstBot;
 		while (bot and target.compare(bot->getName()))
 			bot = bot->Next;
-		if (bot) {
+		 if (bot) {
 			std::cout << RE << *this << " attack " << target << " for " << this->_AttackDamage << " Damages!" << RC << std::endl;
 			bot->takeDamage(this->_AttackDamage);
 		}
@@ -134,7 +148,7 @@ void	ClapTrap::attack(const std::string& target) {
 		this->_EnergyPoints--;
 	}
 	else {
-		std::cout << "[ " << *this << " ] ";
+		std::cout << "[ " << *this << " ]\t";
 		if (!this->_HitPoints)
 			std::cout << RE << *this << " has been destroyed and can't move anymore..." << RC << std::endl;
 		else
@@ -143,13 +157,17 @@ void	ClapTrap::attack(const std::string& target) {
 }
 
 void	ClapTrap::takeDamage(unsigned int amount) {
-	if (amount > this->_HitPoints) {
-		std::cout << "[ " << *this << " ] ";
+	if (!this->_HitPoints){
+		std::cout << "[ " << *this << " ]\t";
+		std::cout << RE << *this << " has already been destroyed!" << RC << std::endl;
+	}
+	else if (amount > this->_HitPoints) {
+		std::cout << "[ " << *this << " ]\t";
 		std::cout << RE << "OVERKILL! " << *this << " took " << amount << " when having only " << this->_HitPoints << " HP left!" << RC << std::endl;
 		this->_HitPoints = 0;
 	}
 	else {
-		std::cout << "[ " << *this << " ] ";
+		std::cout << "[ " << *this << " ]\t";
 		if (amount == 0)
 			std::cout << YE << *this << " was attacked but took no Damage!" << RC << std::endl;
 		else {
@@ -164,9 +182,12 @@ void	ClapTrap::takeDamage(unsigned int amount) {
 
 void	ClapTrap::beRepaired( unsigned int amount) {
 	if (this->_HitPoints and this->_EnergyPoints) {
-		std::cout << "[ " << *this << " ] ";
-		if (this->_HitPoints + amount >= this->_InitialHP) {
-			std::cout << GR << *this << " repaired himself for " << amount << " Damages and and is back to max Health (Any extra HP is loss)" << RC << std::endl;
+		std::cout << "[ " << *this << " ]\t";
+		if (this->_HitPoints == this->_InitialHP) {
+			std::cout << GR << *this << " try to repair himself for " << amount << " Damages and but already his at his max Health (Any extra HP is loss)" << RC << std::endl;
+		}
+		else if (this->_HitPoints + amount >= this->_InitialHP) {
+			std::cout << GR << *this << " repaired himself for " << amount << " Damages and is back to max Health (Any extra HP is loss)" << RC << std::endl;
 			this->_HitPoints = this->_InitialHP;
 		}
 		else {
@@ -176,7 +197,7 @@ void	ClapTrap::beRepaired( unsigned int amount) {
 		this->_EnergyPoints--;
 	}
 	else {
-		std::cout << "[ " << *this << " ] ";
+		std::cout << "[ " << *this << " ]\t";
 		if (!this->_HitPoints)
 			std::cout << RE << *this << " has been destroyed and can't move anymore..." << RC << std::endl;
 		else

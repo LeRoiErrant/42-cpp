@@ -3,7 +3,7 @@
 # **************************************************************************** #
 
 NAME = ClassGen
-INCL_DIR = 
+INCL_DIR = ClassGen.hpp
 SRC_DIR = 
 UTILS_DIR = 
 
@@ -12,14 +12,14 @@ UTILS_DIR =
 # **************************************************************************** #
 
 CC = g++-11
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
+CFLAGS = -Wall -Wextra -Werror -std=c++17 -pedantic
 LIB_FLAGS = 
 
 # **************************************************************************** #
 #								SOURCE FILES								   #
 # **************************************************************************** #
 
-SRC = main.cpp \
+SRC = Main.cpp \
 	ClassGen.cpp
 
 OBJS = $(SRC:.cpp=.o)

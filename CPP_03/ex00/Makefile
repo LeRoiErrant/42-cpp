@@ -2,8 +2,8 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = Fixed
-INCL_DIR = Fixed.hpp
+NAME = BattleBots
+INCL_DIR = ClapTrap.hpp
 SRC_DIR = 
 UTILS_DIR = 
 
@@ -20,7 +20,7 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = main.cpp \
-	Fixed.cpp
+	ClapTrap.cpp
 
 OBJS = $(SRC:.cpp=.o)
 

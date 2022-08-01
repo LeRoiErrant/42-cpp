@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 08:39:34 by vheran            #+#    #+#             */
-/*   Updated: 2022/07/25 12:01:58 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/30 07:54:25 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,47 @@ Sed::~Sed()
 }
 
 std::string	Sed::strReplace(std::string const &line, std::string const &search, std::string const &replace)
+{
+	std::string			newLine(line);
+	size_t				pos;
+	size_t				len;
+
+	len = search.length();
+	pos = newLine.find(search);
+	while (pos != std::string::npos)
+	{
+		if (!std::isalnum(newLine[pos + len]))
+		{
+			newLine.erase(pos, len);
+			newLine.insert(pos, replace);
+		}
+		pos = newLine.find(search, pos + len);
+	}
+	return (newLine);
+}
+
+/*std::string	Sed::strReplace(std::string const &line, std::string const &search, std::string const &replace)
+{
+	std::stringstream	result;
+	std::istringstream	iss(line);
+	std::string			word;
+	bool				first = true;
+	
+	while (iss >> word)
+	{
+		if (first)
+			first = false;
+		else
+			result << " ";
+		if (!search.compare(word))
+			result << replace;
+		else
+			result << word;
+	}
+	return (result.str());
+}*/
+
+/*std::string	Sed::strReplace(std::string const &line, std::string const &search, std::string const &replace)
 {
 	std::stringstream	ss;
 	size_t				j;
@@ -40,7 +81,7 @@ std::string	Sed::strReplace(std::string const &line, std::string const &search, 
 			ss << line[i];
 	}
 	return (ss.str());
-}
+}*/
 
 void	Sed::replace(std::string const &filename, std::string const &search, std::string const &replace)
 {
