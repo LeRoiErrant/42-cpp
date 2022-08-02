@@ -1,9 +1,8 @@
-#include "ScavTrap.hpp"
+#include "DiamondTrap.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
 #include <sstream>
-#define N_CLAP 12
 
 enum mode {
 	QUIT,
@@ -12,33 +11,39 @@ enum mode {
 };
 
 enum bot {
-	HEAVY,
-	QUICK,
-	COMPUTER,
+	BOBBY,
+	JOHN,
+	COMPUTER = 0,
 	PLAYER
 };
 
 enum action {
 	HEAL,
 	GUARD,
+	HIGHFIVE,
 	ATTACK,
 	FORFEIT
 };
 
-bool	cerberror(std::string msg, char *arg, bool result)
-{
-	if (!msg.empty())
-		std::cerr << msg;
-	if (arg)
-		std::cerr << arg;
-	std::cerr << std::endl;
-	return (result);
-}
+void	takeTurn(DiamondTrap *bot, DiamondTrap *Opponent) {
+	int	res;
 
-void	takeTurn(ClapTrap *bot, ClapTrap *Opponent) {
-	switch (std::rand() % 4) {
+	switch (std::rand() % 6) {
 		case HEAL:
-			bot->beRepaired((std::rand() % 4) + 1);
+			bot->beRepaired((std::rand() % 15) + 1);
+			break;
+		case GUARD:
+			bot->guardGate();
+			break;
+		case HIGHFIVE:
+			bot->highFivesGuys();
+			if (bot->getHighFived()) {
+				res = (std::rand() % 6) + 1; 
+				Opponent->setEnergyPoints(Opponent->getEnergyPoints() + res);
+				std::cout << "[ " << std::setw(12) << std::left << *Opponent << RE << " " << std::setw(3) << std::right << Opponent->getHitPoints() << "  " << CY << std::setw(3) << std::right << Opponent->getEnergyPoints() << RC << " ]\t";
+				std::cout << BL << *Opponent << " share " << *bot << "'s Glee and regain " << res << " Energy Point" << RC << std::endl;
+
+			}
 			break;
 		default:
 			bot->attack(Opponent->getName());
@@ -46,125 +51,44 @@ void	takeTurn(ClapTrap *bot, ClapTrap *Opponent) {
 	}
 }
 
-void	takeTurn(ClapTrap *bot, ScavTrap *Opponent) {
-	int	clap;
-
-	clap = std::rand() % N_CLAP;
-	for (int i = 0; i < 6 and (!bot[clap].getEnergyPoints() or !bot[clap].getHitPoints()); i++)
-		clap = std::rand() % N_CLAP;
-	switch (std::rand() % 6) {
-		case HEAL:
-			bot[clap].beRepaired((std::rand() % 4) + 1);
-			break;
-		default:
-			bot[clap].attack(Opponent->getName());
-			break;
-	}
-}
-
-void	takeTurn(ScavTrap *bot, ClapTrap *Opponent) {
-	int	clap;
-
-	switch (std::rand() % 4) {
-		case HEAL:
-			bot->beRepaired((std::rand() % 4) + 1);
-			break;
-		case GUARD:
-			bot->guardGate();
-			break;
-		default:
-			clap = std::rand() % N_CLAP;
-			for (int i = 0; i < 5 and !Opponent[clap].getHitPoints(); i++)
-				clap = std::rand() % N_CLAP;
-			bot->attack(Opponent[clap].getName());
-			break;
-	}
-}
-
-ClapTrap	*assembleClapTrapArmy( unsigned int N, std::string name) {
-	ClapTrap			*Army = new ClapTrap[N];
-	std::stringstream	ssname;
-	
-	for (unsigned int i = 0; i < N; i++) {
-		ssname << name << "-" << i;
-		Army[i].setName(ssname.str());
-		ssname.str(std::string());
-		Army[i].setAttackDamage((std::rand() % 5) + 1);
-	}
-	return (Army);
-}
-
-bool	checkQuickEnergy( ClapTrap *Quick ) {
-	unsigned int check = 0;
-
-	for (int i = 0; i < N_CLAP; i++) {
-		if (Quick[i].getEnergyPoints() > 0)
-			check++;
-	}
-	if (check > 0)
-		return (true);
-	else
-		return (false);
-}
-
-bool	checkQuickHealth( ClapTrap *Quick ) {
-	unsigned int check = 0;
-
-	for (int i = 0; i < N_CLAP; i++) {
-		if (Quick[i].getHitPoints() > 0)
-			check++;
-	}
-	if (check > 0)
-		return (true);
-	else
-		return (false);
-}
-
-bool	Battle( void ) {
+void	Battle( void ) {
 	bool 		EnergyLeft;
 	bool		BotDestroyed;
-	ClapTrap	*Quick;
-	ScavTrap	Heavy("Cerberus");
+	DiamondTrap	Bobby("Bobby");
+	DiamondTrap	John("John");
 
-	Quick = assembleClapTrapArmy(N_CLAP, "Bobby");
-	if (!Quick)
-		return (cerberror("Battlebots: error: Failed to create Clap Army", 0, false));
-	EnergyLeft = checkQuickEnergy(Quick) or Heavy.getEnergyPoints();
-	BotDestroyed = !checkQuickHealth(Quick) or !Heavy.getHitPoints();
+	Bobby.whoAmI();
+	John.whoAmI();
+	EnergyLeft = Bobby.getEnergyPoints() or John.getEnergyPoints();
+	BotDestroyed = !Bobby.getHitPoints() or !John.getHitPoints();
 	while (EnergyLeft and !BotDestroyed) {
-		if (std::rand() % 4 == HEAVY)
-			takeTurn(&Heavy, Quick);
+		if (std::rand() % 2 == BOBBY)
+			takeTurn(&Bobby, &John);
 		else
-			takeTurn(Quick, &Heavy);
-		EnergyLeft = checkQuickEnergy(Quick) or Heavy.getEnergyPoints();
-		BotDestroyed = !checkQuickHealth(Quick) or !Heavy.getHitPoints();
+			takeTurn(&John, &Bobby);
+		EnergyLeft = Bobby.getEnergyPoints() or John.getEnergyPoints();
+		BotDestroyed = !Bobby.getHitPoints() or !John.getHitPoints();
 	usleep(500000);
 	}
 	if (BotDestroyed) {
-		if (!checkQuickHealth(Quick))
-			std::cout << MA << "WE HAVE A WINNER! " << Heavy.getName() << " destroyed the ClapTrap Army!" << RC << std::endl; 
+		if (!Bobby.getHitPoints())
+			std::cout << MA << "WE HAVE A WINNER! " << John.getName() << " destroyed " << Bobby.getName() << "!" << RC << std::endl; 
 		else
-			std::cout << MA << "WE HAVE A WINNER! " << "The ClapTrap Army destroyed " << Heavy.getName() << "!" << RC << std::endl;
+			std::cout << MA << "WE HAVE A WINNER! " << Bobby.getName() << " destroyed " << John.getName() << "!" << RC << std::endl;
 	}
 	else
 		std::cout << MA << "IT'S A DRAW! All Bots have no Energy left!" << RC <<std::endl;
-	delete [] Quick;
-	return (true);
 }
 
 void	assemblyLine( void ) {
-	ClapTrap	Bot1("Bot1");
-	ScavTrap	Bot2("Bot2");
-	ClapTrap	Bot3("Bot3");
-	ClapTrap	Clone1(Bot1);
-	ScavTrap	Clone2(Bot2);
-	ClapTrap	Unamed;
+	DiamondTrap	Bot1("Diamond");
+	ClapTrap	Bot2("Clap");
 	ClapTrap	*test;
 
-	Unamed = Bot2;
+	Bot1.whoAmI();
 	test = ClapTrap::FirstBot;
 	while (test) {
-		std::cout << *test << " is next on assembly line" << std::endl;
+		std::cout << test->getName() << " is next on assembly line" << std::endl;
 		test = test->Next;
 	}
 }
@@ -212,7 +136,10 @@ std::string	askName( void ) {
 	return ("Unamed bot");
 }
 
-void	ComputerTurn(ScavTrap *bot, ScavTrap *Opponent) {
+void	ComputerTurn(DiamondTrap *bot, ClapTrap *Opponent) {
+	int	res;
+
+	res = (std::rand() % 6) + 1;
 	switch (std::rand() % 4) {
 		case HEAL:
 			bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10) + 3);
@@ -220,24 +147,34 @@ void	ComputerTurn(ScavTrap *bot, ScavTrap *Opponent) {
 		case GUARD:
 			bot->guardGate();
 			break;
+		case HIGHFIVE:
+			bot->highFivesGuys();
+			if (bot->getHighFived()) {
+				res = (std::rand() % 6) + 1; 
+				Opponent->setEnergyPoints(Opponent->getEnergyPoints() + res);
+				std::cout << "[ " << std::setw(12) << std::left << *Opponent << RE << " " << std::setw(3) << std::right << Opponent->getHitPoints() << "  " << CY << std::setw(3) << std::right << Opponent->getEnergyPoints() << RC << " ]\t";
+				std::cout << BL << *Opponent << " share " << *bot << "'s Glee and regain " << res << " Energy Point" << RC << std::endl;
+
+			}
+			break;
 		default:
 			if ( bot->getHitPoints() < (bot->getInitialHP() / 2)) {
 				if (std::rand() % 100 < 50)
 					bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10) + 3);
 				else {
-					bot->setAttackDamage((std::rand() % 15) + 10);
+					bot->setAttackDamage((std::rand() % 15) + 15);
 					bot->attack(Opponent->getName());
 				}
 			}
 			else {
-				bot->setAttackDamage((std::rand() % 15) + 10);
+				bot->setAttackDamage((std::rand() % 15) + 15);
 				bot->attack(Opponent->getName());
 			}
 			break;
 	}
 }
 
-int	PlayerAction( void ) {
+int	PlayerAction( std::string *PlayerActions ) {
 	std::string	cmd;
 	bool		ask;
 
@@ -245,27 +182,35 @@ int	PlayerAction( void ) {
 	while (ask) {
 		std::cout << MA << "Please select action ( ATTACK / GUARD / REPAIR ): " << RC;
 		std::getline(std::cin, cmd);
-		if (!cmd.compare("ATTACK"))
-			return (ATTACK);
-		else if (!cmd.compare("GUARD"))
-			return (GUARD);
-		else if (!cmd.compare("REPAIR"))
-			return (HEAL);
-		else if (!cmd.compare("FORFEIT"))
-			return (FORFEIT);
-		else
-			std::cout << RE << "Invalid command" << RC << std::endl;
+		for (int i = HEAL; i <= FORFEIT; i++) {
+			if (!cmd.compare(PlayerActions[i]))
+				return (i);
+		}
+		std::cout << RE << "Invalid command" << RC << std::endl;
 	}
 	return (ATTACK);
 }
 
-void	PlayerTurn(ScavTrap *bot, ScavTrap *Opponent) {
-	switch (PlayerAction()) {
+void	PlayerTurn(DiamondTrap *bot, ClapTrap *Opponent, std::string *PlayerActions) {
+	int	res;
+
+	res = (std::rand() % 6) + 1;
+	switch (PlayerAction(PlayerActions)) {
 		case HEAL:
 			bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10));
 			break;
 		case GUARD:
 			bot->guardGate();
+			break;
+		case HIGHFIVE:
+			bot->highFivesGuys();
+			if (bot->getHighFived()) {
+				res = (std::rand() % 6) + 1; 
+				Opponent->setEnergyPoints(Opponent->getEnergyPoints() + res);
+				std::cout << "[ " << std::setw(12) << std::left << *Opponent << RE << " " << std::setw(3) << std::right << Opponent->getHitPoints() << "  " << CY << std::setw(3) << std::right << Opponent->getEnergyPoints() << RC << " ]\t";
+				std::cout << BL << *Opponent << " share " << *bot << "'s Glee and regain " << res << " Energy Point" << RC << std::endl;
+
+			}
 			break;
 		case FORFEIT:
 			bot->setHitPoints(0);
@@ -273,29 +218,31 @@ void	PlayerTurn(ScavTrap *bot, ScavTrap *Opponent) {
 			std::cout << RE << "Self-Destruct Engaged!" << RC << std::endl;
 			break;
 		default:
-			bot->setAttackDamage((std::rand() % 15) + 10);
+			bot->setAttackDamage((std::rand() % 15) + 15);
 			bot->attack(Opponent->getName());
 			break;
 	}
 }
 
-void	versusBattle( void ) {
-	ScavTrap	Computer("Cerberus");
-	ScavTrap	Player(askName());
+void	versusBattle( std::string *PlayerActions ) {
+	DiamondTrap	Computer("J0CK");
+	DiamondTrap	Player(askName());
 	bool		EnergyLeft;
 	bool		BotDestroyed;
 	int			Turn;
 
+	Computer.whoAmI();
+	Player.whoAmI();
 	EnergyLeft = Player.getEnergyPoints() or Computer.getEnergyPoints();
 	BotDestroyed = !Player.getHitPoints() or !Computer.getHitPoints();
-	Turn = (std::rand() % 2) + 2;
+	Turn = (std::rand() % 2);
 	while (EnergyLeft and !BotDestroyed) {
 		if (Turn == COMPUTER) {
 			ComputerTurn(&Computer, &Player);
 			Turn = PLAYER;
 		}
 		else {
-			PlayerTurn(&Player, &Computer);
+			PlayerTurn(&Player, &Computer, PlayerActions);
 			Turn = COMPUTER;
 		}
 		EnergyLeft = Player.getEnergyPoints() or Computer.getEnergyPoints();
@@ -352,18 +299,23 @@ bool	askAssemblyLine( void ) {
 }
 
 int	main( void ) {
+	std::string	PlayerActions[5];
 	if (askAssemblyLine())
 		assemblyLine();
 	std::srand(time(NULL));
 	switch (askMode()) {
 		case SIM:
 			askVerbose();
-			if (!Battle())
-				return 1;
+			Battle();
 			break;
 		case VERSUS:
 			askVerbose();
-			versusBattle();
+			PlayerActions[HEAL] = "REPAIR";
+			PlayerActions[GUARD] = "GUARD";
+			PlayerActions[HIGHFIVE] = "HIGHFIVE";
+			PlayerActions[ATTACK] = "ATTACK";
+			PlayerActions[FORFEIT] = "FORFEIT";
+			versusBattle(PlayerActions);
 			break;
 		default:
 			std::cout << "Leaving the Arena" << std::endl;

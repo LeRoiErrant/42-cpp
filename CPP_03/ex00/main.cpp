@@ -225,7 +225,7 @@ void	versusBattle( void ) {
 	bool		BotDestroyed;
 	int			Turn;
 
-	EnergyLeft = Player.getEnergyPoints() and Computer.getEnergyPoints();
+	EnergyLeft = Player.getEnergyPoints() or Computer.getEnergyPoints();
 	BotDestroyed = !Player.getHitPoints() or !Computer.getHitPoints();
 	Turn = (std::rand() % 2) + 2;
 	while (EnergyLeft and !BotDestroyed) {
@@ -237,7 +237,7 @@ void	versusBattle( void ) {
 			PlayerTurn(&Player, &Computer);
 			Turn = COMPUTER;
 		}
-		EnergyLeft = Player.getEnergyPoints() and Computer.getEnergyPoints();
+		EnergyLeft = Player.getEnergyPoints() or Computer.getEnergyPoints();
 		BotDestroyed = !Player.getHitPoints() or !Computer.getHitPoints();
 	usleep(500000);
 	}
