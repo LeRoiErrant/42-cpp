@@ -115,17 +115,20 @@ void	ScavTrap::absorbDamage( unsigned int amount ) {
 	std::stringstream	ss;
 	
 	ss.str(std::string());
+	amount /= 2;
+	if (!amount)
+		amount = 1;
 	if ( this->_Absorbed + amount <= this->_ShieldCapacity and this->_EnergyPoints >= amount ) {
 		this->_EnergyPoints -= amount;
 		this->_Absorbed += amount;
-		ss << CY << *this << "'s Energy Shield absorbed " << amount << " Damages.\n\t\tShield capacity left: " << (this->_ShieldCapacity - this->_Absorbed) << "\n\t\tEnergy left: " << this->_EnergyPoints << RC << std::endl;
-		if (this->_Absorbed == this->_ShieldCapacity) {
-			ss << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";			ss << CY << "Maximum Shield Capacity reached.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
+		ss << CY << *this << "'s Energy Shield absorbed " << amount << " Damages." << RC << std::endl;
+		if (this->_Absorbed == this->_ShieldCapacity) {		
+			ss << CY << "\t\t\t\tMaximum Shield Capacity reached." << RC << std::endl;
 			this->_GateKeeper = false;
 			this->_Absorbed = 0;
 		}
 		else if (!this->_EnergyPoints) {
-			ss << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";			ss << CY << *this << "has no Energy left.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
+			ss << CY << "\t\t\t\t" << *this << " has no Energy left." << RC << std::endl;
 			this->_GateKeeper = false;
 			this->_Absorbed = 0;
 		}
@@ -138,7 +141,7 @@ void	ScavTrap::absorbDamage( unsigned int amount ) {
 		this->_GateKeeper = false;
 		this->_Absorbed = 0;
 	}
-	else if ( this->_Absorbed + amount > this->_ShieldCapacity and (this->_ShieldCapacity - this->_Absorbed) > this->_EnergyPoints) {
+	else if ((this->_ShieldCapacity - this->_Absorbed) > this->_EnergyPoints) {
 		absorbed = this->_EnergyPoints;
 		damage = amount - absorbed;
 		this->_EnergyPoints = 0;
@@ -148,6 +151,8 @@ void	ScavTrap::absorbDamage( unsigned int amount ) {
 	}
 	if (!this->_GateKeeper)
 		ss << CY << "\t\t\t\tEnding GATE KEEPER mode." << RC << std::endl;
+	else
+		ss << CY << "\t\t\t\tShield capacity left: " << (this->_ShieldCapacity - this->_Absorbed) << "\n\t\t\t\tEnergy left: " << this->_EnergyPoints << RC << std::endl;
 	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t" << ss.str();
 	if (damage)
 		this->takeDamage(damage);
@@ -158,9 +163,8 @@ void	ScavTrap::takeDamage(unsigned int amount) {
 	bool				shield = this->_GateKeeper;
 
 	ss.str(std::string());
-	if (!this->_HitPoints){
+	if (!this->_HitPoints)
 		ss << RE << *this << " has already been destroyed!" << RC << std::endl;
-	}
 	else if (this->_GateKeeper)
 		absorbDamage(amount);
 	else {
@@ -182,16 +186,20 @@ void	ScavTrap::takeDamage(unsigned int amount) {
 	}
 	if (!shield)
 		std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t" << ss.str();
-	}
+	if (!this->_HitPoints)
+		this->_EnergyPoints = 0;
+}
 
 void	ScavTrap::guardGate( void ) {
 	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";
-	if (!this->_GateKeeper) {
+	if (!this->_EnergyPoints)
+		std::cout << CY << "No Energy left. GATE KEEPER mode initialization failed" << RC << std::endl;
+	else if (!this->_GateKeeper) {
 		std::cout << CY << "Engaging GATE KEEPER mode. Energy Shield (" << this->_ShieldCapacity << ") deployed" << RC << std::endl;
 		this->_GateKeeper = true;
 	}
 	else
-		std::cout << CY << "GATE KEEPER mode already engaged. Energy Shield Capacity left: " << this->_ShieldCapacity - this->_Absorbed << RC << std::endl;
+		std::cout << CY << "GATE KEEPER mode already engaged.\n\t\t\t\tEnergy Shield Capacity left: " << this->_ShieldCapacity - this->_Absorbed << RC << std::endl;
 }
 
 std::ostream	&operator<<( std::ostream & ostream, ScavTrap const & src ) {

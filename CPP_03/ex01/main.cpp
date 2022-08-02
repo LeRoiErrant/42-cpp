@@ -3,7 +3,7 @@
 #include <ctime>
 #include <unistd.h>
 #include <sstream>
-#define N_CLAP 21
+#define N_CLAP 12
 
 enum mode {
 	QUIT,
@@ -47,17 +47,24 @@ void	take_turn(ClapTrap *bot, ClapTrap *Opponent) {
 }
 
 void	take_turn(ClapTrap *bot, ScavTrap *Opponent) {
-	switch (std::rand() % 4) {
+	int	clap;
+
+	clap = std::rand() % N_CLAP;
+	for (int i = 0; i < 6 and (!bot[clap].getEnergyPoints() or !bot[clap].getHitPoints()); i++)
+		clap = std::rand() % N_CLAP;
+	switch (std::rand() % 6) {
 		case HEAL:
-			bot[std::rand() % N_CLAP].beRepaired((std::rand() % 4) + 1);
+			bot[clap].beRepaired((std::rand() % 4) + 1);
 			break;
 		default:
-			bot[std::rand() % N_CLAP].attack(Opponent->getName());
+			bot[clap].attack(Opponent->getName());
 			break;
 	}
 }
 
 void	take_turn(ScavTrap *bot, ClapTrap *Opponent) {
+	int	clap;
+
 	switch (std::rand() % 4) {
 		case HEAL:
 			bot->beRepaired((std::rand() % 4) + 1);
@@ -66,7 +73,10 @@ void	take_turn(ScavTrap *bot, ClapTrap *Opponent) {
 			bot->guardGate();
 			break;
 		default:
-			bot->attack(Opponent[std::rand() % N_CLAP].getName());
+			clap = std::rand() % N_CLAP;
+			for (int i = 0; i < 5 and !Opponent[clap].getHitPoints(); i++)
+				clap = std::rand() % N_CLAP;
+			bot->attack(Opponent[clap].getName());
 			break;
 	}
 }
@@ -119,14 +129,14 @@ bool	Battle( void ) {
 	Quick = assembleClapTrapArmy(N_CLAP, "Bobby");
 	if (!Quick)
 		return (cerberror("Battlebots: error: Failed to create Clap Army", 0, false));
-	EnergyLeft = checkQuickEnergy(Quick) and Heavy.getEnergyPoints();
+	EnergyLeft = checkQuickEnergy(Quick) or Heavy.getEnergyPoints();
 	BotDestroyed = !checkQuickHealth(Quick) or !Heavy.getHitPoints();
 	while (EnergyLeft and !BotDestroyed) {
 		if (std::rand() % 4 == HEAVY)
 			take_turn(&Heavy, Quick);
 		else
 			take_turn(Quick, &Heavy);
-		EnergyLeft = checkQuickEnergy(Quick) and Heavy.getEnergyPoints();
+		EnergyLeft = checkQuickEnergy(Quick) or Heavy.getEnergyPoints();
 		BotDestroyed = !checkQuickHealth(Quick) or !Heavy.getHitPoints();
 	usleep(500000);
 	}

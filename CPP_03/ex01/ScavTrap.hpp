@@ -7,7 +7,7 @@
 # define SHP 100
 # define SEP 50
 # define SDPA 20
-# define SSC 5
+# define SSC 10
 
 class ScavTrap : public ClapTrap {
 	private:

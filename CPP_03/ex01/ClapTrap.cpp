@@ -68,8 +68,10 @@ ClapTrap::ClapTrap( ClapTrap const & src ) {
 }
 
 ClapTrap::~ClapTrap( void ) {
-	if (ClapTrap::_Verbose)
+	if (ClapTrap::_Verbose) {
 		std::cout << this->_Name << " is not usefull anymore. Self-destruct initiated." << std::endl;
+		std::cout << "\t\tEnd states:\n\t\tHit points: " << this->_HitPoints << "\n\t\tEnergy points: " << this->_EnergyPoints << std::endl;
+	}
 	if (this->Previous and this->Next) {
 		this->Previous->Next = this->Next;
 		this->Next->Previous = this->Previous;
@@ -146,8 +148,8 @@ unsigned int	ClapTrap::getAttackDamage( void ) const {
 void	ClapTrap::attack(const std::string& target) {
 	ClapTrap	*bot;
 
+	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";
 	if (this->_HitPoints and this->_EnergyPoints) {
-		std::cout << "[ " << *this << " ]\t";
 		bot = ClapTrap::FirstBot;
 		while (bot and target.compare(bot->getName()))
 			bot = bot->Next;
@@ -161,7 +163,6 @@ void	ClapTrap::attack(const std::string& target) {
 		this->_EnergyPoints--;
 	}
 	else {
-		std::cout << "[ " << *this << " ]\t";
 		if (!this->_HitPoints)
 			std::cout << RE << *this << " has been destroyed and can't move anymore..." << RC << std::endl;
 		else
@@ -170,52 +171,55 @@ void	ClapTrap::attack(const std::string& target) {
 }
 
 void	ClapTrap::takeDamage(unsigned int amount) {
-	if (!this->_HitPoints){
-		std::cout << "[ " << *this << " ]\t";
-		std::cout << RE << *this << " has already been destroyed!" << RC << std::endl;
-	}
+	std::stringstream	ss;
+
+	ss.str(std::string());
+	if (!this->_HitPoints)
+		ss << RE << *this << " has already been destroyed!" << RC << std::endl;
 	else if (amount > this->_HitPoints) {
-		std::cout << "[ " << *this << " ]\t";
-		std::cout << RE << "OVERKILL! " << *this << " took " << amount << " when having only " << this->_HitPoints << " HP left!" << RC << std::endl;
+		ss << RE << "OVERKILL! " << *this << " took " << amount << " when having only " << this->_HitPoints << " HP left!" << RC << std::endl;
 		this->_HitPoints = 0;
 	}
 	else {
-		std::cout << "[ " << *this << " ]\t";
 		if (amount == 0)
-			std::cout << YE << *this << " was attacked but took no Damage!" << RC << std::endl;
+			ss << YE << *this << " was attacked but took no Damage!" << RC << std::endl;
 		else {
 			this->_HitPoints -= amount;
 			if (!this->_HitPoints)
-				std::cout << RE << "Final blow! " << *this << " took " << amount << " Damages and has no HP left!" << RC << std::endl;
+				ss << RE << "Final blow! " << *this << " took " << amount << " Damages and has no HP left!" << RC << std::endl;
 			else
-				std::cout << YE << "Ouch! " << *this << " took " << amount << " Damages! " << *this << " got " << this->_HitPoints << " HP left!" << RC << std::endl;
+				ss << YE << "Ouch! " << *this << " took " << amount << " Damages! " << *this << " got " << this->_HitPoints << " HP left!" << RC << std::endl;
 		}
 	}
+	if (!this->_HitPoints)
+		this->_EnergyPoints = 0;
+	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t" << ss.str();
 }
 
 void	ClapTrap::beRepaired( unsigned int amount) {
+	std::stringstream	ss;
+	
 	if (this->_HitPoints and this->_EnergyPoints) {
-		std::cout << "[ " << *this << " ]\t";
 		if (this->_HitPoints == this->_InitialHP) {
-			std::cout << GR << *this << " try to repair himself for " << amount << " Damages but already his at his max Health (Any extra HP is loss)" << RC << std::endl;
+			ss << GR << *this << " try to repair himself for " << amount << " Damages but already his at his max Health (Any extra HP is loss)" << RC << std::endl;
 		}
 		else if (this->_HitPoints + amount >= this->_InitialHP) {
-			std::cout << GR << *this << " repaired himself for " << amount << " Damages and is back to max Health (Any extra HP is loss)" << RC << std::endl;
+			ss << GR << *this << " repaired himself for " << amount << " Damages and is back to max Health (Any extra HP is loss)" << RC << std::endl;
 			this->_HitPoints = this->_InitialHP;
 		}
 		else {
 			this->_HitPoints += amount;
-			std::cout << GR << *this << " repaired himself for " << amount << " Damages and has now " << this->_HitPoints << " HP left!" << RC << std::endl;
+			ss << GR << *this << " repaired himself for " << amount << " Damages and has now " << this->_HitPoints << " HP left!" << RC << std::endl;
 		}
 		this->_EnergyPoints--;
 	}
 	else {
-		std::cout << "[ " << *this << " ]\t";
 		if (!this->_HitPoints)
-			std::cout << RE << *this << " has been destroyed and can't move anymore..." << RC << std::endl;
+			ss << RE << *this << " has been destroyed and can't move anymore..." << RC << std::endl;
 		else
-			std::cout << CY << *this << " has no Energy left and can't move anymore. Go back to Base." << RC << std::endl;
+			ss << CY << *this << " has no Energy left and can't move anymore. Go back to Base." << RC << std::endl;
 	}
+	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t" << ss.str();
 }
 
 std::ostream	&operator<<( std::ostream & ostream, ClapTrap const & src ) {
