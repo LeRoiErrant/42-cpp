@@ -35,7 +35,7 @@ bool	cerberror(std::string msg, char *arg, bool result)
 	return (result);
 }
 
-void	take_turn(ClapTrap *bot, ClapTrap *Opponent) {
+void	takeTurn(ClapTrap *bot, ClapTrap *Opponent) {
 	switch (std::rand() % 4) {
 		case HEAL:
 			bot->beRepaired((std::rand() % 4) + 1);
@@ -46,7 +46,7 @@ void	take_turn(ClapTrap *bot, ClapTrap *Opponent) {
 	}
 }
 
-void	take_turn(ClapTrap *bot, ScavTrap *Opponent) {
+void	takeTurn(ClapTrap *bot, ScavTrap *Opponent) {
 	int	clap;
 
 	clap = std::rand() % N_CLAP;
@@ -62,7 +62,7 @@ void	take_turn(ClapTrap *bot, ScavTrap *Opponent) {
 	}
 }
 
-void	take_turn(ScavTrap *bot, ClapTrap *Opponent) {
+void	takeTurn(ScavTrap *bot, ClapTrap *Opponent) {
 	int	clap;
 
 	switch (std::rand() % 4) {
@@ -133,9 +133,9 @@ bool	Battle( void ) {
 	BotDestroyed = !checkQuickHealth(Quick) or !Heavy.getHitPoints();
 	while (EnergyLeft and !BotDestroyed) {
 		if (std::rand() % 4 == HEAVY)
-			take_turn(&Heavy, Quick);
+			takeTurn(&Heavy, Quick);
 		else
-			take_turn(Quick, &Heavy);
+			takeTurn(Quick, &Heavy);
 		EnergyLeft = checkQuickEnergy(Quick) or Heavy.getEnergyPoints();
 		BotDestroyed = !checkQuickHealth(Quick) or !Heavy.getHitPoints();
 	usleep(500000);
@@ -152,7 +152,7 @@ bool	Battle( void ) {
 	return (true);
 }
 
-void	assembly_line( void ) {
+void	assemblyLine( void ) {
 	ClapTrap	Bot1("Bot1");
 	ScavTrap	Bot2("Bot2");
 	ClapTrap	Bot3("Bot3");
@@ -167,10 +167,9 @@ void	assembly_line( void ) {
 		std::cout << *test << " is next on assembly line" << std::endl;
 		test = test->Next;
 	}
-
 }
 
-int	ask_mode( void ) {
+int	askMode( void ) {
 	std::string	cmd;
 	bool		ask;
 
@@ -354,10 +353,11 @@ bool	askAssemblyLine( void ) {
 
 int	main( void ) {
 	if (askAssemblyLine())
-		assembly_line();
+		assemblyLine();
 	std::srand(time(NULL));
-	switch (ask_mode()) {
+	switch (askMode()) {
 		case SIM:
+			askVerbose();
 			if (!Battle())
 				return 1;
 			break;
