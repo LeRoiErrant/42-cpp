@@ -5,9 +5,11 @@ ScavTrap::ScavTrap( void ) : ClapTrap(), _GateKeeper(false), _Absorbed(0), _Shie
 	this->_InitialHP = this->_HitPoints;
 	this->_EnergyPoints = SEP;
 	this->_AttackDamage = SDPA;
-	std::cout << *this << " has been upgraded and now is a ScavTrap!" << std::endl;
-	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << *this << " is ready to fight!" << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << *this << " has been upgraded and now is a ScavTrap!" << std::endl;
+		std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << *this << " is ready to fight!" << std::endl;
+	}
 }
 
 ScavTrap::ScavTrap( std::string name ) : ClapTrap(name), _GateKeeper(false), _Absorbed(0), _ShieldCapacity(SSC) {
@@ -15,9 +17,11 @@ ScavTrap::ScavTrap( std::string name ) : ClapTrap(name), _GateKeeper(false), _Ab
 	this->_InitialHP = this->_HitPoints;
 	this->_EnergyPoints = SEP;
 	this->_AttackDamage = SDPA;
-	std::cout << *this << " has been upgraded and now is a ScavTrap!" << std::endl;
-	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << *this << " is ready to fight!" << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << *this << " has been upgraded and now is a ScavTrap!" << std::endl;
+		std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << *this << " is ready to fight!" << std::endl;
+	}
 }
 
 
@@ -25,17 +29,21 @@ ScavTrap::ScavTrap( ScavTrap const & src ) : ClapTrap(src) {
 	this->_GateKeeper = src.getGateKeeper();
 	this->_Absorbed = src.getAbsorbed();
 	this->_ShieldCapacity = src.getShieldCapacity();
-	std::cout << *this << " has been succesfully cloned as a ScavTrap!" << std::endl;
-	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << *this << " is ready to fight!" << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << *this << " has been succesfully cloned as a ScavTrap!" << std::endl;
+		std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << *this << " is ready to fight!" << std::endl;
+	}
 }
 
 ScavTrap::~ScavTrap( void ) {
-	std::cout << *this << " is no longer a ScavTrap." << std::endl;
+	if (ClapTrap::_Verbose)
+		std::cout << *this << " is no longer a ScavTrap." << std::endl;
 }
 
 ScavTrap	&ScavTrap::operator=( ScavTrap const & src ) {
-	std::cout << *this << " is being reassignated from:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	if (ClapTrap::_Verbose)
+		std::cout << *this << " is being reassignated from:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
 	this->setName(src.getName());
 	this->_HitPoints = src.getHitPoints();
 	this->_InitialHP = src.getInitialHP();
@@ -44,8 +52,10 @@ ScavTrap	&ScavTrap::operator=( ScavTrap const & src ) {
 	this->_GateKeeper = src.getGateKeeper();
 	this->_Absorbed = src.getAbsorbed();
 	this->_ShieldCapacity = src.getShieldCapacity();
-	std::cout << "to:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << "He is now " << *this << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << "to:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << "He is now " << *this << std::endl;
+	}
 	return (*this);
 }
 

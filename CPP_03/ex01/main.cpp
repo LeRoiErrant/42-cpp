@@ -5,9 +5,17 @@
 #include <sstream>
 #define N_CLAP 21
 
+enum mode {
+	QUIT,
+	SIM,
+	VERSUS
+};
+
 enum bot {
 	HEAVY,
-	QUICK
+	QUICK,
+	COMPUTER,
+	PLAYER
 };
 
 enum action {
@@ -151,10 +159,181 @@ void	assembly_line( void ) {
 
 }
 
+int	ask_mode( void ) {
+	std::string	cmd;
+	bool		ask;
+
+	ask = true;
+	while (ask) {
+		std::cout << MA << "Please select mode (AI / PLAYER): " << RC;
+		std::getline(std::cin, cmd);
+		if (!cmd.compare("AI"))
+			return (SIM);
+		else if (!cmd.compare("PLAYER"))
+			return (VERSUS);
+		else if (!cmd.compare("EXIT"))
+			return (QUIT);
+		else
+			std::cout << RE << "Invalid command" << RC << std::endl;
+	}
+	return (QUIT);
+}
+
+std::string	askName( void ) {
+	std::string	cmd;
+	bool		ask;
+	
+	ask = true;
+	while (ask) {
+		std::cout << "Please enter your Bot's Name: ";
+		std::getline(std::cin, cmd);
+		if (!cmd.length()) {
+			std::cout << RE << "Empty name not allowed" << RC << std::endl;
+		}
+		else
+			return (cmd);
+	}
+	return ("Unamed bot");
+}
+
+void	ComputerTurn(ScavTrap *bot, ScavTrap *Opponent) {
+	switch (std::rand() % 4) {
+		case HEAL:
+			bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10));
+			break;
+		case GUARD:
+			bot->guardGate();
+			break;
+		default:
+			bot->setAttackDamage((std::rand() % 15) + 10);
+			bot->attack(Opponent->getName());
+			break;
+	}
+}
+
+int	PlayerAction( void ) {
+	std::string	cmd;
+	bool		ask;
+
+	ask = true;
+	while (ask) {
+		std::cout << MA << "Please select action ( ATTACK / GUARD / REPAIR ): " << RC;
+		std::getline(std::cin, cmd);
+		if (!cmd.compare("ATTACK"))
+			return (ATTACK);
+		else if (!cmd.compare("GUARD"))
+			return (GUARD);
+		else if (!cmd.compare("REPAIR"))
+			return (HEAL);
+		else
+			std::cout << RE << "Invalid command" << RC << std::endl;
+	}
+	return (ATTACK);
+}
+
+void	PlayerTurn(ScavTrap *bot, ScavTrap *Opponent) {
+	switch (PlayerAction()) {
+		case HEAL:
+			bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10));
+			break;
+		case GUARD:
+			bot->guardGate();
+			break;
+		default:
+			bot->setAttackDamage((std::rand() % 15) + 10);
+			bot->attack(Opponent->getName());
+			break;
+	}
+}
+
+void	versusBattle( void ) {
+	ScavTrap	Computer("Cerberus");
+	ScavTrap	Player(askName());
+	bool		EnergyLeft;
+	bool		BotDestroyed;
+	int			Turn;
+
+	EnergyLeft = Player.getEnergyPoints() and Computer.getEnergyPoints();
+	BotDestroyed = !Player.getHitPoints() or !Computer.getHitPoints();
+	Turn = (std::rand() % 2) + 2;
+	while (EnergyLeft and !BotDestroyed) {
+		if (Turn == COMPUTER) {
+			ComputerTurn(&Computer, &Player);
+			Turn = PLAYER;
+		}
+		else {
+			PlayerTurn(&Player, &Computer);
+			Turn = COMPUTER;
+		}
+		EnergyLeft = Player.getEnergyPoints() and Computer.getEnergyPoints();
+		BotDestroyed = !Player.getHitPoints() or !Computer.getHitPoints();
+	usleep(500000);
+	}
+	if (BotDestroyed) {
+		if (!Player.getHitPoints())
+			std::cout << MA << "WE HAVE A WINNER! " << Computer.getName() << " destroyed " << Player.getName() << "!" << RC << std::endl; 
+		else
+			std::cout << MA << "WE HAVE A WINNER! " << Player.getName() << " destroyed " << Computer.getName() << "!" << RC << std::endl;
+	}
+	else
+		std::cout << MA << "IT'S A DRAW! Both Bots have no Energy left!" << RC <<std::endl;
+}
+
+void	askVerbose( void ) {
+	std::string	cmd;
+	bool		ask;
+	
+	ask = true;
+	while (ask) {
+		std::cout << "Verbose activated ( y / N ) ? ";
+		std::getline(std::cin, cmd);
+		if (!cmd.compare("y")) {
+			ClapTrap::setVerbose(true);
+			ask = false;
+		}
+		else if (!cmd.compare("N")) {
+			ClapTrap::setVerbose(false);
+			ask = false;
+		}
+		else
+			std::cout << RE << "Invalid command" << RC << std::endl;
+	}
+}
+
+bool	askAssemblyLine( void ) {
+	std::string	cmd;
+	bool		ask;
+	
+	ask = true;
+	while (ask) {
+		std::cout << "Check Assembly line ( y / N ) ? ";
+		std::getline(std::cin, cmd);
+		if (!cmd.compare("y"))
+			return (true);
+		else if (!cmd.compare("N"))
+			return (false);
+		else
+			std::cout << RE << "Invalid command" << RC << std::endl;
+	}
+	return (false);
+}
+
 int	main( void ) {
-	assembly_line();
+	if (askAssemblyLine())
+		assembly_line();
 	std::srand(time(NULL));
-	if (!Battle())
-		return 1;
+	switch (ask_mode()) {
+		case SIM:
+			if (!Battle())
+				return 1;
+			break;
+		case VERSUS:
+			askVerbose();
+			versusBattle();
+			break;
+		default:
+			std::cout << "Leaving the Arena" << std::endl;
+			break;
+	}
 	return 0;
 }

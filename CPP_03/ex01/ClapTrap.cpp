@@ -3,6 +3,7 @@
 
 ClapTrap	*ClapTrap::FirstBot = NULL;
 ClapTrap	*ClapTrap::LastBot = NULL;
+bool		ClapTrap::_Verbose = true;
 
 ClapTrap::ClapTrap( void ) : _Name("Unamed Bot"), _HitPoints(HP), _InitialHP(_HitPoints), _EnergyPoints(EP), _AttackDamage(DPA) {
 	if (!ClapTrap::FirstBot) {
@@ -16,9 +17,11 @@ ClapTrap::ClapTrap( void ) : _Name("Unamed Bot"), _HitPoints(HP), _InitialHP(_Hi
 		this->Next = NULL;
 		ClapTrap::LastBot = this;
 	}
-	std::cout << *this << " has been succesfully created as a ClapTrap!" << std::endl;
-	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << *this << " is ready to fight!" << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << *this << " has been succesfully created as a ClapTrap!" << std::endl;
+		std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << *this << " is ready to fight!" << std::endl;
+	}
 }
 
 ClapTrap::ClapTrap( std::string name ) : _Name(name), _HitPoints(HP), _InitialHP(_HitPoints), _EnergyPoints(EP), _AttackDamage(DPA) {
@@ -33,9 +36,11 @@ ClapTrap::ClapTrap( std::string name ) : _Name(name), _HitPoints(HP), _InitialHP
 		this->Next = NULL;
 		ClapTrap::LastBot = this;
 	}
-	std::cout << *this << " has been succesfully created as a ClapTrap!" << std::endl;
-	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << *this << " is ready to fight!" << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << *this << " has been succesfully created as a ClapTrap!" << std::endl;
+		std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << *this << " is ready to fight!" << std::endl;
+	}
 }
 
 ClapTrap::ClapTrap( ClapTrap const & src ) {
@@ -55,13 +60,16 @@ ClapTrap::ClapTrap( ClapTrap const & src ) {
 		this->Next = NULL;
 		ClapTrap::LastBot = this;
 	}
-	std::cout << *this << " has been succesfully cloned as a ClapTrap!" << std::endl;
-	std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << *this << " is ready to fight!" << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << *this << " has been succesfully cloned as a ClapTrap!" << std::endl;
+		std::cout << "\tHit points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << *this << " is ready to fight!" << std::endl;
+	}
 }
 
 ClapTrap::~ClapTrap( void ) {
-	std::cout << this->_Name << " is not usefull anymore. Self-destruct initiated." << std::endl;
+	if (ClapTrap::_Verbose)
+		std::cout << this->_Name << " is not usefull anymore. Self-destruct initiated." << std::endl;
 	if (this->Previous and this->Next) {
 		this->Previous->Next = this->Next;
 		this->Next->Previous = this->Previous;
@@ -77,14 +85,17 @@ ClapTrap::~ClapTrap( void ) {
 }
 
 ClapTrap	&ClapTrap::operator=( ClapTrap const & src ) {
-	std::cout << *this << " is being reassignated from:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+	if (ClapTrap::_Verbose)
+		std::cout << *this << " is being reassignated from:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
 	this->_Name = src.getName();
 	this->_HitPoints = src.getHitPoints();
 	this->_InitialHP = src.getInitialHP();
 	this->_EnergyPoints = src.getEnergyPoints();
 	this->_AttackDamage = src.getAttackDamage();
-	std::cout << "to:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
-	std::cout << "He is now " << *this << std::endl;
+	if (ClapTrap::_Verbose) {
+		std::cout << "to:\n\tHit Points:\t" << this->_HitPoints << "\n\tEnergy Points:\t" << this->_EnergyPoints << "\n\tAttack Damages:\t" << this->_AttackDamage << std::endl;
+		std::cout << "He is now " << *this << std::endl;
+	}
 	return (*this);
 }
 
@@ -121,9 +132,11 @@ unsigned int	ClapTrap::getEnergyPoints( void ) const {
 }
 
 void	ClapTrap::setAttackDamage( unsigned int const value ) {
-	std::cout << *this << " has been reprogrammed. " << *this << "'s Attack Damage is set from " << this->_AttackDamage;
+	if (ClapTrap::_Verbose)
+		std::cout << *this << " has been reprogrammed. " << *this << "'s Attack Damage is set from " << this->_AttackDamage;
 	this->_AttackDamage = value;
-	std::cout << " to " << this->_AttackDamage << std::endl;
+	if (ClapTrap::_Verbose)
+		std::cout << " to " << this->_AttackDamage << std::endl;
 }
 
 unsigned int	ClapTrap::getAttackDamage( void ) const {
@@ -208,4 +221,8 @@ void	ClapTrap::beRepaired( unsigned int amount) {
 std::ostream	&operator<<( std::ostream & ostream, ClapTrap const & src ) {
 	ostream << src.getName();
 	return (ostream);
+}
+
+void	ClapTrap::setVerbose(bool const value) {
+	ClapTrap::_Verbose = value;
 }

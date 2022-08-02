@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:22:26 by vheran            #+#    #+#             */
-/*   Updated: 2022/08/01 14:48:56 by vheran           ###   ########.fr       */
+/*   Updated: 2022/08/01 22:02:43 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,15 @@
 class ClapTrap {
 
 	private:
-		std::string			_Name;		
+
 	protected:
+		std::string			_Name;	
 		unsigned int		_HitPoints;
 		unsigned int		_InitialHP;
 		unsigned int		_EnergyPoints;
 		unsigned int		_AttackDamage;
+
+		static bool			_Verbose;
 	public:
 		ClapTrap( void );
 		ClapTrap( std::string name );
@@ -55,11 +58,12 @@ class ClapTrap {
 		unsigned int	getEnergyPoints( void ) const;
 		unsigned int	getAttackDamage( void ) const;
 
-		void			setName(std::string name);
-		void			setHitPoints(unsigned int hp);
-		void			setInitialHP( unsigned int value );
-		void			setEnergyPoints(unsigned int ep);
-		void			setAttackDamage(unsigned int dpa);
+		void			setName(std::string const name);
+		void			setHitPoints(unsigned int const hp);
+		void			setInitialHP( unsigned int const value );
+		void			setEnergyPoints(unsigned int const ep);
+		void			setAttackDamage(unsigned int const dpa);
+		static void		setVerbose(bool const value);
 
 		virtual void	attack(const std::string& target);
 		virtual void	takeDamage(unsigned int amount);
