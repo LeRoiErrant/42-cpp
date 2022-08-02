@@ -21,7 +21,8 @@ enum bot {
 enum action {
 	HEAL,
 	GUARD,
-	ATTACK
+	ATTACK,
+	FORFEIT
 };
 
 bool	cerberror(std::string msg, char *arg, bool result)
@@ -181,6 +182,7 @@ int	ask_mode( void ) {
 
 std::string	askName( void ) {
 	std::string	cmd;
+	std::string	scmd;
 	bool		ask;
 	
 	ask = true;
@@ -189,6 +191,11 @@ std::string	askName( void ) {
 		std::getline(std::cin, cmd);
 		if (!cmd.length()) {
 			std::cout << RE << "Empty name not allowed" << RC << std::endl;
+		}
+		else if (cmd.length() > 12) {
+			scmd = cmd.substr(0, 11);
+			scmd.append(".");
+			return (scmd);
 		}
 		else
 			return (cmd);
@@ -199,14 +206,24 @@ std::string	askName( void ) {
 void	ComputerTurn(ScavTrap *bot, ScavTrap *Opponent) {
 	switch (std::rand() % 4) {
 		case HEAL:
-			bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10));
+			bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10) + 3);
 			break;
 		case GUARD:
 			bot->guardGate();
 			break;
 		default:
-			bot->setAttackDamage((std::rand() % 15) + 10);
-			bot->attack(Opponent->getName());
+			if ( bot->getHitPoints() < (bot->getInitialHP() / 2)) {
+				if (std::rand() % 100 < 50)
+					bot->beRepaired((std::rand() % 10) + (std::rand() % 10) + (std::rand() % 10) + 3);
+				else {
+					bot->setAttackDamage((std::rand() % 15) + 10);
+					bot->attack(Opponent->getName());
+				}
+			}
+			else {
+				bot->setAttackDamage((std::rand() % 15) + 10);
+				bot->attack(Opponent->getName());
+			}
 			break;
 	}
 }
@@ -225,6 +242,8 @@ int	PlayerAction( void ) {
 			return (GUARD);
 		else if (!cmd.compare("REPAIR"))
 			return (HEAL);
+		else if (!cmd.compare("FORFEIT"))
+			return (FORFEIT);
 		else
 			std::cout << RE << "Invalid command" << RC << std::endl;
 	}
@@ -238,6 +257,11 @@ void	PlayerTurn(ScavTrap *bot, ScavTrap *Opponent) {
 			break;
 		case GUARD:
 			bot->guardGate();
+			break;
+		case FORFEIT:
+			bot->setHitPoints(0);
+			std::cout << "[ " << std::setw(12) << std::left << *bot << RE << " " << std::setw(3) << std::right << bot->getHitPoints() << "  " << CY << std::setw(3) << std::right << bot->getEnergyPoints() << RC << " ]\t";
+			std::cout << RE << "Self-Destruct Engaged!" << RC << std::endl;
 			break;
 		default:
 			bot->setAttackDamage((std::rand() % 15) + 10);

@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:22:26 by vheran            #+#    #+#             */
-/*   Updated: 2022/08/01 22:02:43 by vheran           ###   ########.fr       */
+/*   Updated: 2022/08/02 09:17:25 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define CLAPTRAP_HPP
 
 # include <iostream>
+# include <sstream>
+# include <iomanip>
 
 # define GR "\033[32;1m"
 # define RE "\033[31;1m"

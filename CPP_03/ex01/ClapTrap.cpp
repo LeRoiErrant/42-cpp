@@ -197,7 +197,7 @@ void	ClapTrap::beRepaired( unsigned int amount) {
 	if (this->_HitPoints and this->_EnergyPoints) {
 		std::cout << "[ " << *this << " ]\t";
 		if (this->_HitPoints == this->_InitialHP) {
-			std::cout << GR << *this << " try to repair himself for " << amount << " Damages and but already his at his max Health (Any extra HP is loss)" << RC << std::endl;
+			std::cout << GR << *this << " try to repair himself for " << amount << " Damages but already his at his max Health (Any extra HP is loss)" << RC << std::endl;
 		}
 		else if (this->_HitPoints + amount >= this->_InitialHP) {
 			std::cout << GR << *this << " repaired himself for " << amount << " Damages and is back to max Health (Any extra HP is loss)" << RC << std::endl;

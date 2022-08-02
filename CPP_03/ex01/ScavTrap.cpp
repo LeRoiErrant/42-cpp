@@ -85,9 +85,11 @@ unsigned int	ScavTrap::getShieldCapacity( void ) const {
 
 void	ScavTrap::attack(const std::string& target) {
 	ClapTrap	*bot;
-
+	
+	if (this->_HitPoints and this->_EnergyPoints) 
+		this->_EnergyPoints--;
+	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";
 	if (this->_HitPoints and this->_EnergyPoints) {
-		std::cout << "[ " << *this << " ]\t";
 		bot = ClapTrap::FirstBot;
 		while (bot and target.compare(bot->getName()))
 			bot = bot->Next;
@@ -98,10 +100,8 @@ void	ScavTrap::attack(const std::string& target) {
 		else {
 			std::cout << YE << "No Target named " << target << " on the Battlefield. The attack failed !" << RC << std::endl;
 		}
-		this->_EnergyPoints--;
 	}
 	else {
-		std::cout << "[ " << *this << "\t";
 		if (!this->_HitPoints)
 			std::cout << RE << *this << " has been destroyed and can't move anymore..." << RC << std::endl;
 		else
@@ -110,20 +110,22 @@ void	ScavTrap::attack(const std::string& target) {
 }
 
 void	ScavTrap::absorbDamage( unsigned int amount ) {
-	unsigned int	absorbed;
-	unsigned int	damage;
+	unsigned int		absorbed(0);
+	unsigned int		damage(0);
+	std::stringstream	ss;
 	
+	ss.str(std::string());
 	if ( this->_Absorbed + amount <= this->_ShieldCapacity and this->_EnergyPoints >= amount ) {
 		this->_EnergyPoints -= amount;
 		this->_Absorbed += amount;
-		std::cout << CY << *this << "'s Energy Shield absorbed " << amount << " Damages.\n\t\tShield capacity left: " << (this->_ShieldCapacity - this->_Absorbed) << "\n\t\tEnergy left: " << this->_EnergyPoints << RC << std::endl;
+		ss << CY << *this << "'s Energy Shield absorbed " << amount << " Damages.\n\t\tShield capacity left: " << (this->_ShieldCapacity - this->_Absorbed) << "\n\t\tEnergy left: " << this->_EnergyPoints << RC << std::endl;
 		if (this->_Absorbed == this->_ShieldCapacity) {
-			std::cout << "[ " << *this << " ]\t" << CY << "Maximum Shield Capacity reached.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
+			ss << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";			ss << CY << "Maximum Shield Capacity reached.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
 			this->_GateKeeper = false;
 			this->_Absorbed = 0;
 		}
 		else if (!this->_EnergyPoints) {
-			std::cout << "[ " << *this << "\t" << CY << *this << "has no Energy left.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
+			ss << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";			ss << CY << *this << "has no Energy left.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
 			this->_GateKeeper = false;
 			this->_Absorbed = 0;
 		}
@@ -132,59 +134,64 @@ void	ScavTrap::absorbDamage( unsigned int amount ) {
 		absorbed = this->_ShieldCapacity - this->_Absorbed;
 		damage = amount - absorbed;
 		this->_EnergyPoints -= absorbed;
-		std::cout << CY << "Maximum Shield Capacity exceeded. " << absorbed << " Damages absorbed and " << damage << " Damages pierced.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
+		ss << CY << "Maximum Shield Capacity exceeded. " << absorbed << " Damages absorbed and " << damage << " Damages pierced." << RC << std::endl;
 		this->_GateKeeper = false;
 		this->_Absorbed = 0;
-		this->takeDamage(damage);
 	}
 	else if ( this->_Absorbed + amount > this->_ShieldCapacity and (this->_ShieldCapacity - this->_Absorbed) > this->_EnergyPoints) {
 		absorbed = this->_EnergyPoints;
 		damage = amount - absorbed;
 		this->_EnergyPoints = 0;
-		std::cout << CY << "No more Energy to withstand Damages. " << absorbed << " Damges absorbed and " << damage << " Dame pierced.\n\t\tEnding GATE KEEPER mode." << RC << std::endl;
+		ss << CY << "No more Energy to withstand Damages. " << absorbed << " Damges absorbed and " << damage << " Damages pierced." << RC << std::endl;
 		this->_GateKeeper = false;
 		this->_Absorbed = 0;
-		this->takeDamage(damage);
 	}
+	if (!this->_GateKeeper)
+		ss << CY << "\t\t\t\tEnding GATE KEEPER mode." << RC << std::endl;
+	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t" << ss.str();
+	if (damage)
+		this->takeDamage(damage);
 }
 
 void	ScavTrap::takeDamage(unsigned int amount) {
-	std::cout << "[ " << *this << " ]\t";
+	std::stringstream	ss;
+	bool				shield = this->_GateKeeper;
+
+	ss.str(std::string());
 	if (!this->_HitPoints){
-		std::cout << RE << *this << " has already been destroyed!" << RC << std::endl;
+		ss << RE << *this << " has already been destroyed!" << RC << std::endl;
 	}
 	else if (this->_GateKeeper)
 		absorbDamage(amount);
 	else {
 		if (amount > this->_HitPoints) {
-			std::cout << RE << "OVERKILL! " << *this << " took " << amount << " when having only " << this->_HitPoints << " HP left!" << RC << std::endl;
+			ss << RE << "OVERKILL! " << *this << " took " << amount << " when having only " << this->_HitPoints << " HP left!" << RC << std::endl;
 			this->_HitPoints = 0;
 		}
 		else {
 			if (amount == 0)
-				std::cout << YE << *this << " was attacked but took no Damage!" << RC << std::endl;
+				ss << YE << *this << " was attacked but took no Damage!" << RC << std::endl;
 			else {
 				this->_HitPoints -= amount;
 			if (!this->_HitPoints)
-				std::cout << RE << "Final blow! " << *this << " took " << amount << " Damages and has no HP left!" << RC << std::endl;
+				ss << RE << "Final blow! " << *this << " took " << amount << " Damages and has no HP left!" << RC << std::endl;
 			else
-				std::cout << YE << "Ouch! " << *this << " took " << amount << " Damages! " << *this << " got " << this->_HitPoints << " HP left!" << RC << std::endl;
+				ss << YE << "Ouch! " << *this << " took " << amount << " Damages! " << *this << " got " << this->_HitPoints << " HP left!" << RC << std::endl;
 			}
 		}
 	}
-}
+	if (!shield)
+		std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t" << ss.str();
+	}
 
 void	ScavTrap::guardGate( void ) {
+	std::cout << "[ " << std::setw(12) << std::left << *this << RE << " " << std::setw(3) << std::right << this->_HitPoints << "  " << CY << std::setw(3) << std::right << this->_EnergyPoints << RC << " ]\t";
 	if (!this->_GateKeeper) {
-		std::cout << "[ " << *this << " ]\t";
 		std::cout << CY << "Engaging GATE KEEPER mode. Energy Shield (" << this->_ShieldCapacity << ") deployed" << RC << std::endl;
 		this->_GateKeeper = true;
 	}
-	else {
-		std::cout << "[ " << *this << " ]\t";
+	else
 		std::cout << CY << "GATE KEEPER mode already engaged. Energy Shield Capacity left: " << this->_ShieldCapacity - this->_Absorbed << RC << std::endl;
-	}
-		
 }
 
 std::ostream	&operator<<( std::ostream & ostream, ScavTrap const & src ) {
