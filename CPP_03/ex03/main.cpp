@@ -101,6 +101,8 @@ int	askMode( void ) {
 	while (ask) {
 		std::cout << MA << "Please select mode (AI / PLAYER): " << RC;
 		std::getline(std::cin, cmd);
+		if (std::cin.eof())
+			exit;
 		if (!cmd.compare("AI"))
 			return (SIM);
 		else if (!cmd.compare("PLAYER"))
@@ -122,6 +124,8 @@ std::string	askName( void ) {
 	while (ask) {
 		std::cout << "Please enter your Bot's Name: ";
 		std::getline(std::cin, cmd);
+		if (std::cin.eof())
+			exit;
 		if (!cmd.length()) {
 			std::cout << RE << "Empty name not allowed" << RC << std::endl;
 		}
@@ -267,6 +271,8 @@ void	askVerbose( void ) {
 	while (ask) {
 		std::cout << "Verbose activated ( y / N ) ? ";
 		std::getline(std::cin, cmd);
+		if (std::cin.eof())
+			exit;
 		if (!cmd.compare("y")) {
 			ClapTrap::setVerbose(true);
 			ask = false;
