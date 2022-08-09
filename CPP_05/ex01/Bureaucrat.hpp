@@ -39,7 +39,9 @@ class Bureaucrat {
 		class GradeTooLowException: public std::exception {
 			virtual const char* what() const throw();
 		};
-
+		class NotaValidBureaucratException: public std::exception {
+			virtual const char* what() const throw();
+		};
 		static bool			Verbose;
 		static void			VerboseMsg(std::string const & msg);
 		static void			setVerbose(bool const & value);
