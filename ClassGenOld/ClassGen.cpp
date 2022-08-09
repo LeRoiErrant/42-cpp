@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/30 08:03:06 by vheran            #+#    #+#             */
-/*   Updated: 2022/08/08 10:31:53 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/30 16:32:49 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,48 +39,10 @@ std::string	ClassGen::getFilename( void ) const {
 	return (this->_Filename);
 }
 
-int	ClassGen::askNbVar( void ) {
-	std::string	cmd;
-	bool		ask;
-	
-	ask = true;
-	while (ask) {
-		std::cout << "How many Private Variable: ";
-		std::getline(std::cin, cmd);
-		if (std::cin.eof())
-			exit(0);
-		if (cmd.length()) {
-			return (std::atoi(cmd.data()));
-		}
-		else
-			std::cout << RE << "Cannot be empty" << RC << std::endl;
-	}
-	return (0);
-}
-
-std::string	ClassGen::askVar( std::string const & asked ) {
-	std::string	cmd;
-	bool		ask;
-	
-	ask = true;
-	while (ask) {
-		std::cout << "Variable " << asked << ": ";
-		std::getline(std::cin, cmd);
-		if (std::cin.eof())
-			exit(0);
-		if (cmd.length()) {
-			return (cmd.data());
-		}
-		else
-			std::cout << RE << "Cannot be empty" << RC << std::endl;
-	}
-	return ("");
-}
-
-bool	ClassGen::setVariables( void ) {
+bool	ClassGen::setVariables( int argc, char **argv ) {
 	
 
-	this->_NbVar = this->askNbVar();
+	this->_NbVar = argc - 2;
 	this->_VarType = new std::string[this->_NbVar];
 	if (!this->_VarType)
 		return (cerberror("ClassGen: error: ", "VarType allocation failed", false));
@@ -90,8 +52,9 @@ bool	ClassGen::setVariables( void ) {
 		return (cerberror("ClassGen: error: ", "VarType allocation failed", false));
 	}
 	for (int i = 0; i < this->_NbVar; i++) {
-		this->_VarType[i] = askVar("Type");
-		this->_VarValue[i] = askVar("Name");
+		std::istringstream	iss(argv[i + 2]);
+		iss >> this->_VarType[i];
+		iss >> this->_VarValue[i];
 	}
 	return (true);
 }

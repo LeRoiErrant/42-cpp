@@ -3,7 +3,7 @@
 # **************************************************************************** #
 
 NAME = ClassGen
-INCL_DIR = ClassGen.hpp Sed.hpp
+INCL_DIR = ClassGen.hpp
 SRC_DIR = 
 UTILS_DIR = 
 
@@ -20,8 +20,7 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = Main.cpp \
-	ClassGen.cpp \
-	Sed.cpp
+	ClassGen.cpp
 
 OBJS = $(SRC:.cpp=.o)
 

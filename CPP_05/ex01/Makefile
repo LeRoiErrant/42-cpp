@@ -2,8 +2,8 @@
 #							PROJECT'S DIRECTORY								   #
 # **************************************************************************** #
 
-NAME = ClassGen
-INCL_DIR = ClassGen.hpp Sed.hpp
+NAME = Bureaucracy
+INCL_DIR = Bureaucrat.hpp Form.hpp
 SRC_DIR = 
 UTILS_DIR = 
 
@@ -12,16 +12,16 @@ UTILS_DIR =
 # **************************************************************************** #
 
 CC = g++-11
-CFLAGS = -Wall -Wextra -Werror -std=c++17 -pedantic
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
 LIB_FLAGS = 
 
 # **************************************************************************** #
 #								SOURCE FILES								   #
 # **************************************************************************** #
 
-SRC = Main.cpp \
-	ClassGen.cpp \
-	Sed.cpp
+SRC = main.cpp \
+	Bureaucrat.cpp \
+	Form.cpp
 
 OBJS = $(SRC:.cpp=.o)
 

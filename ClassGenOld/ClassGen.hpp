@@ -6,7 +6,7 @@
 /*   By: vheran <vheran@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:23:38 by vheran            #+#    #+#             */
-/*   Updated: 2022/08/08 10:30:37 by vheran           ###   ########.fr       */
+/*   Updated: 2022/07/30 15:59:23 by vheran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <sstream>
 # include <string>
 # include <filesystem>
-# include "Sed.hpp"
 
 #define FAILURE 1
 
@@ -44,9 +43,7 @@ class ClassGen{
 		void		setFilename( std::string const filename );
 		std::string	getFilename( void ) const;
 
-		bool		setVariables( void );
-		int			askNbVar( void );
-		std::string	askVar( std::string const & asked );
+		bool		setVariables( int argc, char **argv);
 		bool		open_files( void );
 		void		close_files( void );
 		void		write_hpp( void );
