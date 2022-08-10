@@ -33,7 +33,7 @@ class Converter {
 
 
 		int		_special;
-
+		int		_dot;
 		static const bool	_verbOn = false;
 		static	void		_Verbose(std::string msg);
 
@@ -60,7 +60,6 @@ class Converter {
 		void		PrintpInf( void );
 		void		PrintmInf( void );
 		
-		std::string	PrintDotZero( double n );
 		bool		CharConversion( double n);
 
 	public:
@@ -77,6 +76,7 @@ class Converter {
 		float		getfloatType( void ) const;
 		double		getdoubleType( void ) const;
 		int			getSpecial( void ) const;
+		int			getDot( void ) const;
 
 		class NotaValidTypeException: public std::exception {
 			virtual const char* what() const throw();

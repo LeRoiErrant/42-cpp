@@ -15,17 +15,19 @@ const char* Converter::NotaValidTypeException::what() const throw()
 	return "Converter Exception: Not a Valid Type";
 }
 
-Converter::Converter( void ) : _inputType(NOTYPE), _charType(0), _intType(0), _floatType(0), _doubleType(0), _special(NOSPECIAL) {
+Converter::Converter( void ) : _inputType(NOTYPE), _charType(0), _intType(0), _floatType(0), _doubleType(0), _special(NOSPECIAL), _dot(0) {
 	Converter::_Verbose("Converter Base Constructor Called");
 }
 
-Converter::Converter( std::string input) : _inputType(NOTYPE), _charType(0), _intType(0), _floatType(0), _doubleType(0), _special(NOSPECIAL) {
+Converter::Converter( std::string input) : _inputType(NOTYPE), _charType(0), _intType(0), _floatType(0), _doubleType(0), _special(NOSPECIAL), _dot(0) {
 	Converter::_Verbose("Converter string initialized Constructor Called");
 	try {
 		if (!findType(input))
 			throw Converter::NotaValidTypeException();
 		else {
 			std::cout << Converter::TypeSelected[this->_inputType] << " Identified" << std::endl;
+			if (!this->_dot)
+				this->_dot = 1;
 			this->printV[CHAR] = &Converter::PrintfromChar;
 			this->printV[INT] = &Converter::PrintfromInt;
 			this->printV[FLOAT] = &Converter::PrintfromFloat;
@@ -37,7 +39,7 @@ Converter::Converter( std::string input) : _inputType(NOTYPE), _charType(0), _in
 	}
 }
 
-Converter::Converter( Converter const & src ) : _inputType(src.getinputType()), _charType(src.getcharType()), _intType(src.getintType()), _floatType(src.getfloatType()), _doubleType(src.getdoubleType()), _special(src.getSpecial()) {
+Converter::Converter( Converter const & src ) : _inputType(src.getinputType()), _charType(src.getcharType()), _intType(src.getintType()), _floatType(src.getfloatType()), _doubleType(src.getdoubleType()), _special(src.getSpecial()), _dot(src.getDot()) {
 	Converter::_Verbose("Converter Copy Constructor Called");
 	this->printV[CHAR] = &Converter::PrintfromChar;
 	this->printV[INT] = &Converter::PrintfromInt;
@@ -85,6 +87,10 @@ int	Converter::getSpecial( void ) const {
 	return (this->_special);
 }
 
+int	Converter::getDot( void ) const {
+	return (this->_dot);
+}
+
 int	Converter::SpecialCases(std::string input ) {
 	for (int i = 0 ; i < 3 ; i++) {
 		if (!input.compare(Converter::specialFloat[i])) {
@@ -116,6 +122,8 @@ int	Converter::NumericValue( std::string input ) {
 			return (NOTYPE);
 		else if (!digit and std::isdigit(input[i]))
 			digit = true;
+		else if (std::isdigit(input[i]) and dot)
+			this->_dot++;
 	}
 	if (!digit)
 		return (NOTYPE);
@@ -182,8 +190,8 @@ void	Converter::PrintValues( void ) {
 void	Converter::PrintfromChar( void ) {
 	std::cout << std::setw(10) << std::left << "char: " << "'" << this->_charType << "'" << std::endl;
 	std::cout << std::setw(10) << std::left << "int: " << static_cast<int>(this->_charType) << std::endl;
-	std::cout << std::setw(10) << std::left << "float: " << static_cast<float>(this->_charType) << ".0f" << std::endl;
-	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_charType) << ".0" << std::endl;
+	std::cout << std::setw(10) << std::left << "float: " << std::setprecision(this->_dot) << std::fixed  << static_cast<float>(this->_charType) << "f" << std::endl;
+	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_charType) << "" << std::endl;
 }
 
 bool	Converter::CharConversion( double n ) {
@@ -196,34 +204,28 @@ bool	Converter::CharConversion( double n ) {
 	return (false);
 }
 
-std::string	Converter::PrintDotZero( double n) {
-	if ( n - static_cast<int>(n) == 0)
-		return (".0");
-	return ("");
-}
-
 void	Converter::PrintfromInt( void ) {
 	if (this->CharConversion(this->_intType))
 		std::cout << std::setw(10) << std::left << "char: " << "'" << static_cast<char>(this->_intType) << "'" << std::endl;
 	std::cout << std::setw(10) << std::left << "int: " << this->_intType << std::endl;
-	std::cout << std::setw(10) << std::left << "float: " << static_cast<float>(this->_intType) << ".0f" << std::endl;
-	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_intType) << ".0" << std::endl;
+	std::cout << std::setw(10) << std::left << "float: " << std::setprecision(this->_dot) << std::fixed << static_cast<float>(this->_intType) << "f" << std::endl;
+	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_intType) << std::endl;
 }
 
 void	Converter::PrintfromFloat( void ) {
 	if (this->CharConversion(this->_floatType))
 		std::cout << std::setw(10) << std::left << "char: " << "'" << static_cast<char>(this->_floatType) << "'" << std::endl;
 	std::cout << std::setw(10) << std::left << "int: " << static_cast<int>(this->_floatType) << std::endl;
-	std::cout << std::setw(10) << std::left << "float: " << this->_floatType << this->PrintDotZero(this->_floatType) << "f" << std::endl;
-	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_floatType) << this->PrintDotZero(this->_floatType) << std::endl;
+	std::cout << std::setw(10) << std::left << "float: " << std::setprecision(this->_dot) << std::fixed << this->_floatType << "f" << std::endl;
+	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_floatType) << std::endl;
 }
 
 void	Converter::PrintfromDouble( void ) {
 	if (this->CharConversion(this->_doubleType))
 		std::cout << std::setw(10) << std::left << "char: " << "'" << static_cast<char>(this->_doubleType) << "'" << std::endl;
 	std::cout << std::setw(10) << std::left << "int: " << static_cast<int>(this->_doubleType) << std::endl;
-	std::cout << std::setw(10) << std::left << "float: " << this->_doubleType << this->PrintDotZero(this->_doubleType) << "f" << std::endl;
-	std::cout << std::setw(10) << std::left << "double: " << static_cast<double>(this->_doubleType) << this->PrintDotZero(this->_doubleType) << std::endl;
+	std::cout << std::setw(10) << std::left << "float: " << std::setprecision(this->_dot) << std::fixed << static_cast<float>(this->_doubleType) << "f" << std::endl;
+	std::cout << std::setw(10) << std::left << "double: " << this->_doubleType << std::endl;
 }
 
 void	Converter::PrintNaN( void ) {
