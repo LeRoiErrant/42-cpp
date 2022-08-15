@@ -13,7 +13,7 @@ int main( void ) {
 	std::srand(time(NULL));
 	try {
 		for ( int i = 0; i < 9997 ; i++)
-			sp.addNumber(std::rand() % 100);
+			sp.addNumber(std::rand() % 100000000);
 		std::cout << "Size: " << sp.getSize() << " Storage: " << sp.getMaxStorage() << std::endl;
 		vec.push_back(1);
 		vec.push_back(12);

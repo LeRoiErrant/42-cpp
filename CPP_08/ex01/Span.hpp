@@ -11,8 +11,8 @@
 
 class Span {
 	private:
-		unsigned int	_MaxStorage;
-		unsigned int	_StorageLeft;
+		unsigned int		_MaxStorage;
+		unsigned int		_StorageLeft;
 		std::vector<int>	_Storage;
 		Span( void );
 

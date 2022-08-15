@@ -70,35 +70,30 @@ const char* Span::NotEnoughNumbersException::what() const throw() {
 }
 
 unsigned int	Span::shortestSpan( void ) {
-	unsigned int	range = std::numeric_limits<unsigned int>::max();
+	unsigned int				range = std::numeric_limits<unsigned int>::max();
+	std::vector<int>			tmp(this->_Storage);
+	std::vector<int>::iterator	current;
+	std::vector<int>::iterator	next;
 
-	for ( std::vector<int>::iterator it = this->_Storage.begin() ; it != this->_Storage.end() ; it++ ) {
-		for ( std::vector<int>::iterator i = it + 1 ; i != this->_Storage.end() ; i++ ) {
-			unsigned int	tmp = 0;
-			if ( *i > *it )
-				tmp = *i - *it;
-			else
-				tmp = *it - *i;
-			if ( tmp < range )
-				range = tmp;
-		}
+	if (this->_Storage.size() <= 1)
+		throw Span::NotEnoughNumbersException();
+	std::sort(tmp.begin(), tmp.end());
+	current = tmp.begin();
+	next = current + 1;
+	while (next != tmp.end()) {
+		unsigned int	delta = std::abs(*current - *next);
+		if (delta < range)
+			range = delta;
+		current++;
+		next++;
 	}
 	return range;
 }
 
 unsigned int	Span::longestSpan( void ) {
-	unsigned int	range = 0;
-
-	for ( std::vector<int>::iterator it = this->_Storage.begin() ; it != this->_Storage.end() ; it++ ) {
-		for ( std::vector<int>::iterator i = it + 1 ; i != this->_Storage.end() ; i++ ) {
-			unsigned int	tmp = 0;
-			if ( *i > *it )
-				tmp = *i - *it;
-			else
-				tmp = *it - *i;
-			if ( tmp > range )
-				range = tmp;
-		}
-	}
-	return range;
+	if (this->_Storage.size() <= 1)
+		throw Span::NotEnoughNumbersException();
+	int	min = *std::min_element(this->_Storage.begin(), this->_Storage.end());
+	int	max = *std::max_element(this->_Storage.begin(), this->_Storage.end());
+	return (std::abs(max - min));
 }
