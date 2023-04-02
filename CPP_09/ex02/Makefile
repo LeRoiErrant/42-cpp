@@ -3,7 +3,7 @@
 # **************************************************************************** #
 
 NAME = PmergeMe
-INCL_DIR = TimSort.hpp
+INCL_DIR = PmergeMe.hpp
 SRC_DIR = 
 UTILS_DIR = 
 
@@ -20,7 +20,7 @@ LIB_FLAGS =
 # **************************************************************************** #
 
 SRC = main.cpp \
-	TimSort.cpp
+	PmergeMe.cpp
 
 OBJS = $(SRC:.cpp=.o)
 
