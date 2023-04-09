@@ -32,8 +32,7 @@ void blockMergeSort(std::deque<int>& d, size_t blockSize) {
     std::deque< std::deque<int> > blocks;
     for (size_t i = 0; i < d.size(); i += blockSize) {
 		std::deque<int> block;
-		block.push_back(d[i]);
-        for (size_t j = i + 1; j < std::min(i + blockSize, d.size()); j++) {
+        for (size_t j = i ; j < std::min(i + blockSize, d.size()); j++) {
 			block.push_back(d[j]);
         }
         insertionSort(block);
@@ -62,6 +61,39 @@ void blockMergeSort(std::deque<int>& d, size_t blockSize) {
     }
 
     d = blocks.front();
+}
+
+// **************************************************************************** //
+//								DEQUE ALT									   	//
+// **************************************************************************** //
+
+
+void blockSort(std::deque<int> & d, int blockSize) {
+	// Divide the deque into blocks
+    std::deque< std::deque<int> > blocks;
+    for (size_t i = 0; i < d.size(); i += blockSize) {
+		std::deque<int> block;
+        for (size_t j = i ; j < std::min(i + blockSize, d.size()); j++) {
+			block.push_back(d[j]);
+        }
+        insertionSort(block);
+        blocks.push_back(block);
+    }
+    std::deque<int> mergedBlock;
+    while (blocks.size() > 0) {
+		std::deque< std::deque<int> >::iterator minIdx = blocks.begin();
+		for (std::deque< std::deque<int> >::iterator current = blocks.begin()+1; current != blocks.end(); current++) {
+			if (current->front() < minIdx->front()) {
+				minIdx = current;
+			}
+		}
+		mergedBlock.push_back(minIdx->front());
+		minIdx->pop_front();
+		if (minIdx->size() == 0) {
+			blocks.erase(minIdx);
+		}
+    }
+    d = mergedBlock;
 }
 
 // **************************************************************************** //
@@ -123,10 +155,12 @@ void	merge_insert_sort(std::vector<int> &array, int start, int end) {
 
 int	main(int argc, char **argv) {
 	std::string 		input;
-	std::deque<int>		d;
-	clock_t				t_deque;
+	/*std::deque<int>		d;
+	clock_t				t_deque;*/
 	std::vector<int>	v;
 	clock_t				t_vector;
+	std::deque<int>		d_alt;
+	clock_t				t_deque_alt;
 
 	try {
 
@@ -140,11 +174,19 @@ int	main(int argc, char **argv) {
 			input.append(" ");
 		}
 
-		t_deque = clock();
+		int minRun;
+
+		/*t_deque = clock();
 		d = fillContainer<std::deque<int> >(input, n);
-		int minRun = minRunLength(n);
+		minRun = minRunLength(n);
 		blockMergeSort(d, minRun);
-		t_deque = clock() - t_deque;
+		t_deque = clock() - t_deque;*/
+
+		t_deque_alt = clock();
+		d_alt = fillContainer<std::deque<int> >(input, n);
+		minRun = minRunLength(n);
+		blockMergeSort(d_alt, minRun);
+		t_deque_alt = clock() - t_deque_alt;
 
 		t_vector = clock();
 		v = fillContainer<std::vector<int> >(input, n);
@@ -153,11 +195,14 @@ int	main(int argc, char **argv) {
 
 		std::cout << "Before:\n\t" << input << std::endl;
 		std::cout << "After:\n\tDEQUE\n\t\t";
-		printContainer<std::deque<int> >(d);
+		//printContainer<std::deque<int> >(d);
+		std::cout << "\tDEQUE ALT\n\t\t";
+		printContainer<std::deque<int> >(d_alt);
 		std::cout << "\tVECTOR\n\t\t";
 		printContainer<std::vector<int> >(v);
 
-		std::cout << "Time to process " << n << " elements with std::deque(" << INSERT_THRESHOLD <<"): " << (double)(t_deque) / CLOCKS_PER_SEC * 100000 << "us" << std::endl;
+		//std::cout << "Time to process " << n << " elements with std::deque: " << (double)(t_deque) / CLOCKS_PER_SEC * 100000 << "us" << std::endl;
+		std::cout << "Time to process " << n << " elements with std::deque: " << (double)(t_deque_alt) / CLOCKS_PER_SEC * 100000 << "us" << std::endl;
 		std::cout << "Time to process " << n << " elements with std::vector: " << (double)(t_vector) / CLOCKS_PER_SEC * 100000 << "us" << std::endl;
 	} catch(std::runtime_error const &e) {
 		std::cout << "FAILURE\t" << e.what() << std::endl;

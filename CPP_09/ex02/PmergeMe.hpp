@@ -11,6 +11,7 @@
 # include <exception>
 # include <time.h>
 # include <type_traits>
+# include <list>
 
 # define INSERT_THRESHOLD 64
 
