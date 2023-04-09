@@ -13,6 +13,7 @@
 # include <type_traits>
 # include <list>
 
+
 # define INSERT_THRESHOLD 64
 
 template<typename Container>
@@ -22,8 +23,9 @@ Container	fillContainer(const std::string& input) {
 	std::string			token;
 	typedef std::vector<typename Container::value_type> vector_type;
 	typedef std::deque<typename Container::value_type> deque_type;
+	typedef std::list<typename Container::value_type> list_type;
 	
-	if (typeid(result) != typeid(vector_type) and typeid(result) != typeid(deque_type))
+	if (typeid(result) != typeid(vector_type) and typeid(result) != typeid(deque_type) and typeid(result) != typeid(list_type))
 		throw std::invalid_argument ("Invalid container");
 	while (std::getline(iss, token, ' ')) {
 		size_t pos;
