@@ -20,7 +20,9 @@ RPN::RPN( std::string exp ) : _exp(exp) {
     }
     if (_solver.size() != 1) {
         throw RPN::InvalidExpressionException();
-    }
+    } else {
+		std::cout << _solver.top() << std::endl;
+	}
 }
 
 RPN::~RPN( void ) {
@@ -53,3 +55,7 @@ const char* RPN::InvalidExpressionException::what() const throw()
     return "ERROR: Invalid Expression";
 }
 
+const char* ParametersErrorException::what() const throw()
+{
+    return "ERROR: Not enough arguments";
+}

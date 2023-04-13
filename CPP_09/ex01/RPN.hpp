@@ -29,4 +29,7 @@ public:
         virtual const char* what() const throw();
     };
 };
+class ParametersErrorException: public std::exception {
+	virtual const char* what() const throw();
+};
 #endif //INC_42_RPN_HPP
