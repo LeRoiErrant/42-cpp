@@ -49,8 +49,8 @@ void BitcoinExchange::process_file(const std::string & infile)
 	std::ifstream		file;
 	std::tm				t = {};
 
-	file.open(infile);
-	if (file.bad())
+	file.open(infile, std::ifstream::in);
+	if (file.bad() or !file.is_open())
 		throw std::runtime_error("cannot open input file");
 	while (getline(file, line))
 	{
